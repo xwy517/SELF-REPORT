@@ -1,0 +1,2286 @@
+<!DOCTYPE html>
+<!-- MIRRORSCALE / 明镜心理 · A 24-question self-assessment that stops assessing you. -->
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="application-name" content="MIRRORSCALE">
+<meta name="description" content="MIRRORSCALE — a 24-question psychological self-assessment that stops assessing you.">
+<title>心理健康自评 · 专业版</title>
+<link id="favicon" rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='12' fill='none' stroke='%232f8f83' stroke-width='3'/%3E%3Ccircle cx='16' cy='16' r='4' fill='%232f8f83'/%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#eef2f7; --bg2:#e1e9f2; --card:#ffffff; --ink:#1b2431; --ink2:#5c6b7e; --line:#e2e8f0;
+  --accent:#2f8f83; --soft:#f3f8fb; --rad:18px; --pad:46px; --maxw:764px;
+  --shadow:0 34px 70px -34px rgba(18,38,60,.42), 0 2px 10px rgba(18,38,60,.05);
+  --grain:0; --scan:0; --vig:0; --cardx:0;
+  --serif:"Songti SC","STSong","SimSun","Source Han Serif SC",Georgia,serif;
+  --sans:"PingFang SC","Microsoft YaHei","Segoe UI",system-ui,-apple-system,sans-serif;
+  --mono:"Cascadia Mono",Consolas,"SF Mono","Courier New",monospace;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; color:var(--ink); font-family:var(--sans); overflow-x:hidden;
+  background:radial-gradient(120% 100% at 50% 0%, var(--bg) 0%, var(--bg2) 100%);
+  -webkit-font-smoothing:antialiased;
+  transition:background 1.8s ease, color 1.4s ease;
+}
+::selection{background:var(--accent);color:#fff}
+
+/* ---------- atmosphere ---------- */
+#bg{position:fixed;inset:0;width:100%;height:100%;z-index:0;opacity:0;transition:opacity 1.6s ease;pointer-events:none}
+.grain{position:fixed;inset:-60%;width:220%;height:220%;z-index:9998;pointer-events:none;opacity:var(--grain);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation:grainShift .48s steps(3) infinite; transition:opacity 1.4s ease; mix-blend-mode:overlay}
+@keyframes grainShift{0%{transform:translate(0,0)}33%{transform:translate(-2%,1%)}66%{transform:translate(1%,-2%)}100%{transform:translate(0,0)}}
+.scan{position:fixed;inset:0;z-index:9997;pointer-events:none;opacity:var(--scan);transition:opacity 1.4s ease;
+  background:repeating-linear-gradient(to bottom,rgba(255,255,255,.055) 0 1px,transparent 1px 3px)}
+.vig{position:fixed;inset:0;z-index:9996;pointer-events:none;opacity:1;
+  box-shadow:inset 0 0 220px 60px rgba(0,0,0,var(--vig));transition:box-shadow 1.4s ease}
+#flash{position:fixed;inset:0;z-index:9999;background:#fff;opacity:0;pointer-events:none;transition:opacity .1s}
+
+/* ---------- chrome ---------- */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;justify-content:space-between;
+  padding:20px 34px;font-size:12.5px;letter-spacing:.14em;color:var(--ink2);transition:opacity 1s ease,color 1s ease}
+.brand{display:flex;align-items:center;gap:11px}
+.dot{width:9px;height:9px;border-radius:50%;border:1.5px solid var(--accent);position:relative;flex:0 0 auto}
+.dot::after{content:"";position:absolute;inset:2px;border-radius:50%;background:var(--accent)}
+.bname{color:var(--ink);font-weight:600;letter-spacing:.18em}
+.bsep{opacity:.4}
+.bsub{opacity:.72}
+.status{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:11.5px;letter-spacing:.1em}
+.rec{width:7px;height:7px;border-radius:50%;background:#c0392b;opacity:0;transition:opacity .6s}
+body[data-stage="2"] .rec,body[data-stage="3"] .rec,body[data-stage="4"] .rec,body.scene .rec{opacity:1;animation:pulse 1.7s infinite}
+@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(192,57,43,.55)}50%{opacity:.4;box-shadow:0 0 0 7px rgba(192,57,43,0)}}
+
+/* ---------- card ---------- */
+main{position:relative;z-index:2;padding:0 22px 120px}
+.card{
+  width:100%;max-width:var(--maxw);margin:112px auto 0;background:var(--card);
+  border:1px solid var(--line);border-radius:var(--rad);box-shadow:var(--shadow);
+  padding:var(--pad) var(--pad) 34px;position:relative;overflow:hidden;
+  transition:background 1.6s ease,border-color 1.4s ease,border-radius 1.2s ease,box-shadow 1.4s ease,transform 1.2s ease,opacity 1s ease,filter .3s ease;
+  transform:translateX(var(--cardx)) rotate(var(--cardrot,0deg));
+}
+.qmeta{display:flex;align-items:center;justify-content:space-between;gap:16px;
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.13em;color:var(--ink2);transition:color 1s}
+.tag{border:1px solid var(--line);border-radius:999px;padding:3px 10px;font-size:10.5px;letter-spacing:.16em;white-space:nowrap;transition:.8s}
+.bar{height:3px;border-radius:99px;background:color-mix(in srgb,var(--ink) 9%,transparent);margin:18px 0 34px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;border-radius:99px;background:var(--accent);transition:width .9s cubic-bezier(.2,.8,.2,1),background 1.2s}
+.qtext{margin:0 0 12px;font-size:27px;line-height:1.56;font-weight:600;letter-spacing:-.005em;min-height:1.3em;
+  transition:color 1.2s,font-size 1.2s,letter-spacing 1.2s,font-family .8s,text-shadow 1s}
+.qtext.typing::after{content:"";display:inline-block;width:.5em;height:1em;margin-left:.12em;background:currentColor;opacity:.5;vertical-align:-.12em;animation:pulse 1s steps(2) infinite}
+.qsub{margin:0 0 28px;font-size:14px;line-height:1.8;color:var(--ink2);opacity:0;transition:opacity .9s,color 1s}
+.qsub.show{opacity:.9}
+.options{display:grid;gap:10px;margin-top:6px}
+.opt{display:flex;align-items:center;gap:14px;width:100%;padding:15px 18px;text-align:left;cursor:pointer;
+  background:transparent;border:1px solid var(--line);border-radius:12px;color:inherit;font:inherit;font-size:15.5px;
+  animation:optIn .5s both;transition:background .22s,border-color .22s,transform .22s,color .22s,box-shadow .22s,opacity .4s}
+@keyframes optIn{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+.opt .k{flex:0 0 auto;width:23px;height:23px;display:grid;place-items:center;border:1px solid var(--line);border-radius:6px;
+  font-family:var(--mono);font-size:10.5px;color:var(--ink2);transition:.22s}
+.opt:hover{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 6%,transparent);transform:translateX(3px)}
+.opt:hover .k{border-color:var(--accent);color:var(--accent)}
+.opt.picked{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent);box-shadow:inset 0 0 0 1px var(--accent)}
+.opt.dead{opacity:.3}
+.opt:disabled{cursor:default}
+.hint{margin-top:24px;min-height:1.4em;font-family:var(--mono);font-size:11.5px;letter-spacing:.13em;color:var(--ink2);opacity:.75;transition:.6s}
+.hint.big{font-size:44px;letter-spacing:.3em;opacity:1;color:var(--accent);text-align:center;margin-top:18px}
+
+.field{display:flex;gap:10px;margin-top:4px}
+.field input{flex:1;min-width:0;padding:15px 18px;border:1px solid var(--line);border-radius:12px;background:transparent;
+  color:inherit;font:inherit;font-size:16px;letter-spacing:.04em;outline:none;transition:.25s}
+.field input:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 14%,transparent)}
+.field .go{padding:0 26px;border:1px solid var(--accent);background:var(--accent);color:#fff;border-radius:12px;cursor:pointer;
+  font:inherit;font-size:14px;letter-spacing:.1em;transition:.25s}
+.field .go:hover{filter:brightness(1.08)}
+.slider{margin:10px 0 6px}
+.slider input{width:100%;accent-color:var(--accent);height:26px}
+.slider .val{font-family:var(--mono);font-size:13px;letter-spacing:.14em;color:var(--ink2);margin-top:6px}
+
+/* intro */
+#introBlock{transition:opacity .8s}
+.card.intro #qwrap{display:none}
+.card:not(.intro) #introBlock{display:none}
+.big{font-size:40px;line-height:1.25;margin:6px 0 18px;font-weight:600;letter-spacing:-.02em}
+.lede{font-size:15px;line-height:1.95;color:var(--ink2);margin:0 0 26px;max-width:52ch}
+.meta{list-style:none;padding:0;margin:0 0 34px;display:flex;flex-wrap:wrap;gap:10px}
+.meta li{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--ink2);border:1px solid var(--line);border-radius:999px;padding:6px 12px}
+.start{width:100%;padding:17px;border:0;border-radius:13px;background:var(--accent);color:#fff;font:inherit;font-size:15.5px;
+  letter-spacing:.2em;cursor:pointer;transition:.25s}
+.start:hover{filter:brightness(1.08);transform:translateY(-1px)}
+.fine{margin:18px 0 0;font-size:12px;color:var(--ink2);opacity:.7;letter-spacing:.06em}
+
+/* syslog */
+.syslog{position:fixed;left:34px;bottom:24px;z-index:16;max-width:min(560px,70vw);
+  font-family:var(--mono);font-size:11.5px;line-height:1.95;letter-spacing:.03em;color:var(--ink2);opacity:.55;
+  pointer-events:none;transition:opacity 1s,color 1s}
+.syslog .line{opacity:0;transform:translateY(4px);transition:opacity .5s,transform .5s;display:flex;gap:9px}
+.syslog .line.in{opacity:1;transform:none}
+.syslog .ts{opacity:.45;flex:0 0 auto}
+.syslog .tx{color:var(--ink2)}
+
+/* stages */
+body[data-stage="1"]{
+  --bg:#f2ece4;--bg2:#e6dcd0;--card:#fcf9f4;--line:#e7dccc;--ink:#2a211a;--ink2:#77675a;--accent:#8a6a4c;
+  --rad:10px;--grain:.05;--vig:.05;--cardrot:-.28deg;
+}
+body[data-stage="1"] .qtext{font-family:var(--serif);letter-spacing:.01em}
+body[data-stage="1"] .opt{border-radius:8px}
+body[data-stage="2"]{
+  --bg:#ded4c9;--bg2:#cbc0b2;--card:#f3ece3;--line:#dccfc0;--ink:#221a16;--ink2:#6f6156;--accent:#7d3a33;
+  --rad:6px;--grain:.10;--vig:.22;--cardrot:.42deg;
+}
+body[data-stage="2"] .qtext{font-family:var(--serif);text-shadow:0 0 1px rgba(120,40,30,.25)}
+body[data-stage="2"] .tag{color:#7d3a33;border-color:#cdb3a6}
+body[data-stage="2"] .brand .bname{color:#7d3a33}
+body[data-stage="3"]{
+  --bg:#131110;--bg2:#090807;--card:#191514;--line:#2c2422;--ink:#cdc1b6;--ink2:#8b7d72;--accent:#b3352b;
+  --rad:2px;--grain:.15;--vig:.55;--scan:.05;
+}
+body[data-stage="3"] .qtext{font-family:var(--serif);text-shadow:1px 0 rgba(179,53,43,.4),-1.4px 0 rgba(90,140,140,.22)}
+body[data-stage="3"] .opt{background:#141110;border-color:#2a2220}
+body[data-stage="3"] .opt:hover{background:#1d1615;border-color:var(--accent);box-shadow:0 0 24px -6px rgba(179,53,43,.5)}
+body[data-stage="3"] .opt .k{border-color:#2f2624;color:#8a7a70}
+body[data-stage="3"] .card{box-shadow:0 0 0 1px #221a19, 0 40px 90px -40px #000}
+body[data-stage="3"] .tag{color:#b3352b;border-color:#3a2b28}
+body[data-stage="3"] .bar{background:#241c1a}
+body[data-stage="4"]{
+  --bg:#050505;--bg2:#000000;--card:transparent;--line:#1b1615;--ink:#d6ccc4;--ink2:#6a5e57;--accent:#c0392b;
+  --rad:0px;--grain:.20;--vig:.8;--scan:.07;
+}
+body[data-stage="4"] .card{box-shadow:none;border:0;padding:40px 10px;backdrop-filter:none}
+body[data-stage="4"] #bg{opacity:1;z-index:0}
+body[data-stage="3"] #bg{opacity:1;z-index:0;transition:opacity 2.4s ease}
+body[data-stage="4"] .qtext{font-size:34px;line-height:1.52;letter-spacing:.01em;animation:shiver 5.5s infinite steps(14);
+  text-shadow:.7px 0 rgba(179,53,43,.5),-.7px 0 rgba(80,130,130,.3)}
+@keyframes shiver{0%,100%{transform:translate(0,0)}20%{transform:translate(-.6px,.4px)}40%{transform:translate(.5px,-.5px)}60%{transform:translate(-.4px,-.3px)}80%{transform:translate(.4px,.4px)}}
+body[data-stage="4"] .opt{background:transparent;border:0;border-bottom:1px solid #1d1817;border-radius:0;padding:14px 4px;
+  font-family:var(--serif);font-size:18px;letter-spacing:.03em}
+body[data-stage="4"] .opt:hover{color:#fff;border-bottom-color:var(--accent);transform:none;box-shadow:none;background:linear-gradient(90deg,rgba(192,57,43,.09),transparent)}
+body[data-stage="4"] .opt .k{opacity:.5}
+body[data-stage="4"] .qmeta{color:#574b45}
+body[data-stage="4"] .bar{background:#1a1413}
+body[data-stage="4"] .hint.big{color:#c0392b;text-shadow:0 0 30px rgba(192,57,43,.5)}
+
+/* sting / blackout / ender */
+body.stingA #flash{opacity:.95;transition:opacity .015s}
+body.stingB #flash{opacity:0;transition:opacity .16s}
+body.stingA .card{transform:translate(-9px,5px) scale(1.012);filter:invert(1) hue-rotate(150deg) contrast(1.3)}
+body.stingB .card{transform:translate(7px,-4px);filter:none}
+body.blackout{background:#000 !important;transition:none}
+body.blackout .topbar,body.blackout main,body.blackout .syslog{opacity:0 !important;pointer-events:none;transition:opacity 1.1s ease}
+
+#ender{position:fixed;inset:0;z-index:22;display:none;flex-direction:column;justify-content:center;align-items:center;gap:26px;
+  padding:10vw;font-family:var(--mono);font-size:15px;line-height:1.9;letter-spacing:.16em;color:#8b7c74;text-align:center}
+#ender.show{display:flex}
+#ender .eline{opacity:0;transition:opacity .9s}
+#ender .eline.in{opacity:1}
+#ender .eline.dim{color:#3a3230;font-size:12px}
+
+/* flash text */
+#flashText{position:fixed;inset:0;z-index:9995;display:grid;place-items:center;pointer-events:none;opacity:0;
+  font-family:var(--serif);font-size:min(9vw,64px);letter-spacing:.3em;color:#e8ddd4;text-shadow:0 0 40px rgba(0,0,0,.8);
+  transition:opacity .18s;text-align:center;padding:0 6vw}
+#flashText.on{opacity:1}
+
+/* toast */
+.toast{position:fixed;top:74px;right:26px;z-index:25;max-width:320px;padding:14px 16px;border-radius:12px;
+  background:#0e0c0b;color:#b9aca3;border:1px solid #241d1b;font-size:12.5px;line-height:1.75;letter-spacing:.04em;
+  box-shadow:0 24px 60px -20px #000;opacity:0;transform:translateY(-14px);transition:.5s;pointer-events:none;font-family:var(--mono)}
+.toast.show{opacity:1;transform:none}
+.toast b{display:block;color:#e6dbd2;font-weight:500;margin-bottom:6px;letter-spacing:.12em;font-size:11px}
+
+/* dialog */
+.dialog{position:fixed;inset:0;z-index:24;display:none;place-items:center;background:rgba(4,4,4,.72);backdrop-filter:blur(3px)}
+.dialog.show{display:grid}
+.dialog .box{width:min(430px,86vw);background:#151211;border:1px solid #2a2321;border-radius:6px;padding:24px;
+  color:#c9beb5;font-size:14px;line-height:1.8;box-shadow:0 40px 90px -30px #000}
+.dialog .box h4{margin:0 0 8px;font-size:14px;letter-spacing:.1em;color:#e4d9d0;font-weight:500}
+.dialog .box p{margin:0 0 18px;color:#8d8078;font-size:12.5px}
+.dialog .row{display:flex;gap:10px;justify-content:flex-end}
+.dialog button{padding:9px 18px;border-radius:4px;border:1px solid #342b28;background:transparent;color:#b9aca3;font:inherit;font-size:12.5px;cursor:pointer;letter-spacing:.08em}
+.dialog button.pri{background:#8f2f26;border-color:#8f2f26;color:#fff}
+
+/* report */
+.report{position:fixed;inset:0;z-index:30;display:none;overflow:auto;background:#070707;color:#b5a89f;
+  font-family:var(--mono);font-size:13px;line-height:1.95;letter-spacing:.02em;padding:7vh 7vw 9vh}
+.report.show{display:block;animation:fadeIn .9s}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.rwrap{max-width:760px;margin:0 auto}
+.rhead{border-bottom:1px solid #221b19;padding-bottom:20px;margin-bottom:26px}
+.rlogo{font-size:10.5px;letter-spacing:.22em;color:#5f534c;margin-bottom:16px}
+.rhead h2{margin:0 0 8px;font-family:var(--serif);font-size:34px;letter-spacing:.14em;color:#e3d7cd;font-weight:600}
+.rsub{font-size:11px;color:#6b5e57;letter-spacing:.1em}
+.rgrid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:#1c1716;border:1px solid #1c1716;margin-bottom:34px}
+.rgrid>div{background:#0b0a0a;padding:14px 16px;display:flex;justify-content:space-between;gap:12px;font-size:12px}
+.rgrid span{color:#6b5e57}
+.rgrid b{color:#cfc2b8;font-weight:500}
+.rgrid b.ok{color:#6f9e86}
+.report h3{font-size:11px;letter-spacing:.24em;color:#7a6c64;font-weight:500;margin:34px 0 12px;border-bottom:1px dashed #1f1917;padding-bottom:8px}
+.scores{list-style:none;margin:0;padding:0}
+.scores li{display:grid;grid-template-columns:120px 1fr 72px;align-items:center;gap:14px;padding:7px 0;font-size:12px}
+.scores span{color:#8d7f77}
+.scores i{display:block;height:2px;background:#1c1716;position:relative}
+.scores i::after{content:"";position:absolute;inset:0;width:var(--w,50%);background:#8b3a2f;box-shadow:0 0 12px rgba(139,58,47,.5)}
+.scores b{text-align:right;color:#d3c6bc;font-weight:400}
+.incons{margin:0;padding-left:22px;color:#a2938a;font-size:12.5px}
+.incons li{margin-bottom:9px}
+.incons b{color:#c96a5c;font-weight:500}
+.advice{list-style:none;margin:0;padding:0;font-size:12.5px}
+.advice li{padding:6px 0 6px 18px;position:relative;color:#a89a91}
+.advice li::before{content:"—";position:absolute;left:0;color:#5f534c}
+.sig{margin-top:30px;font-size:11px;color:#4f4440;letter-spacing:.12em}
+.ractions{display:flex;flex-wrap:wrap;gap:12px;margin-top:34px;padding-top:26px;border-top:1px solid #1e1817}
+.rbtn{padding:12px 20px;border:1px solid #2b2320;background:transparent;color:#b0a29a;font:inherit;font-size:12px;
+  letter-spacing:.12em;cursor:pointer;transition:.25s;border-radius:2px}
+.rbtn:hover{border-color:#6a4a43;color:#e6dbd2}
+.rbtn.danger{border-color:#6d2a22;color:#c96052}
+.rbtn.danger:hover{background:#6d2a22;color:#fff}
+.rnote{margin-top:18px;font-size:11.5px;color:#6b5e57;min-height:1.6em;letter-spacing:.08em}
+
+/* scene */
+.finale{position:fixed;inset:0;z-index:41;display:none}
+.finale.show{display:block}
+body.scene{cursor:none}
+body.scene #bg{opacity:1;z-index:40;transition:opacity 2.4s ease}
+body.scene .topbar,body.scene main,body.scene .syslog{opacity:0;pointer-events:none}
+.finale::after{content:"";position:absolute;left:0;right:0;bottom:0;height:33vh;z-index:0;pointer-events:none;
+  background:linear-gradient(to top,rgba(0,0,0,.92) 0%,rgba(0,0,0,.5) 46%,rgba(0,0,0,0) 100%)}
+.sceneLines{position:absolute;left:50%;bottom:6.5vh;transform:translateX(-50%);width:min(720px,88vw);text-align:center;
+  z-index:1;font-family:var(--serif);font-size:18px;line-height:2.05;letter-spacing:.12em;color:#cfc2b8;
+  text-shadow:0 0 24px #000,0 0 3px #000}
+.sline{opacity:0;transform:translateY(6px);transition:opacity .9s,transform .9s,font-size 1s;margin:2px 0}
+.sline.in{opacity:1;transform:none}
+.sline.old{opacity:.26;font-size:14.5px}
+.sline.q{font-size:23px;letter-spacing:.16em}
+.sline.q{margin-top:34px;font-size:24px;letter-spacing:.16em;color:#e3d7cd}
+.sopts{display:flex;gap:16px;justify-content:center;margin-top:26px}
+.sopts button{padding:11px 30px;background:transparent;border:1px solid #332925;color:#c3b5ab;font:inherit;font-family:var(--serif);
+  font-size:15px;letter-spacing:.2em;cursor:pointer;transition:.3s}
+.sopts button:hover{border-color:#c0392b;color:#fff;background:rgba(192,57,43,.12)}
+.sopts.gone{opacity:0;transition:opacity .5s;pointer-events:none}
+#cur{position:fixed;width:7px;height:7px;border-radius:50%;background:rgba(255,240,235,.9);z-index:9999;pointer-events:none;
+  transform:translate(-50%,-50%);display:none;box-shadow:0 0 14px rgba(255,200,190,.8)}
+body.scene #cur{display:block}
+
+/* ---------- 夺舍 HUD / 挣扎 / 睁眼 ---------- */
+body.possess{cursor:none}
+body.possess #cur{display:block}
+body.possess .topbar{opacity:0}
+body.possess .sceneLines{opacity:.10;transition:opacity .8s}
+@keyframes shakeBody{0%,100%{transform:translate(0,0)}20%{transform:translate(-6px,3px)}40%{transform:translate(5px,-4px)}60%{transform:translate(-4px,-2px)}80%{transform:translate(3px,4px)}}
+body.shake{animation:shakeBody .36s 2}
+
+#hud{position:fixed;inset:0;z-index:62;display:none;pointer-events:none}
+#hud.show{display:block}
+.hudTop{position:absolute;top:24px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:12px;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.22em;color:#8d7f76}
+.hudbar{width:min(300px,42vw);height:2px;background:#241a18;position:relative;overflow:hidden}
+.hudbar i{position:absolute;left:0;top:0;bottom:0;width:100%;background:#b3352b;transition:width .12s linear,background .3s}
+#hudSub{position:absolute;left:50%;bottom:24vh;transform:translateX(-50%);width:min(80vw,720px);text-align:center;
+  font-family:var(--serif);font-size:21px;letter-spacing:.2em;color:#d3c6bc;opacity:0;transition:opacity .45s;
+  text-shadow:0 0 30px #000,0 0 3px #000}
+#hudSub.on{opacity:1}
+
+.struggle{position:fixed;inset:0;z-index:63;display:none;place-items:center;pointer-events:none}
+.struggle.show{display:grid}
+#pushBtn{pointer-events:auto;padding:20px 56px;background:rgba(16,10,9,.72);border:1px solid #5c2b23;color:#ddcdc3;
+  font-family:var(--serif);font-size:23px;letter-spacing:.34em;cursor:pointer;text-indent:.34em;
+  transition:transform .16s cubic-bezier(.2,.8,.2,1),opacity .4s,border-color .3s,background .3s;backdrop-filter:blur(3px)}
+#pushBtn:hover{border-color:#c0392b;color:#fff;background:rgba(60,20,16,.6)}
+#pushBtn.dead{opacity:.3;cursor:default;border-color:#2a2220}
+
+#lid{position:fixed;inset:0;z-index:80;background:#000;clip-path:inset(50% 0 50% 0);
+  transition:clip-path .55s cubic-bezier(.7,0,.3,1);pointer-events:none}
+#lid.close{clip-path:inset(0 0 0 0)}
+
+.ripple{position:fixed;width:9px;height:9px;margin:-4px 0 0 -4px;border-radius:50%;border:1px solid #c0392b;
+  z-index:64;pointer-events:none;animation:rip .7s ease-out forwards}
+@keyframes rip{from{transform:scale(.6);opacity:.9}to{transform:scale(5.5);opacity:0}}
+
+#after{position:fixed;inset:0;z-index:66;display:none;overflow:auto;padding:9vh 20px 10vh;background:#0a0908;color:var(--ink);
+  --card:#141110;--line:#2b2220;--ink:#ded2c8;--ink2:#9a8c82;--accent:#b3352b}
+#after.show{display:block;animation:fadeIn .8s}
+#after .card{max-width:660px;margin:0 auto;background:var(--card);border:1px solid var(--line);border-radius:2px;
+  padding:38px 34px;box-shadow:0 40px 90px -40px #000}
+#after .qmeta{color:#6b5f58}
+#after .lede{color:#9c8e85}
+#after .qtext{font-size:26px;color:#e0d4ca;font-family:var(--serif)}
+#after .opt{color:#cbbdb3;border-color:#241c19}
+#after .opt.picked{background:rgba(163,48,42,.18);border-color:#a3302a}
+#after .hint{color:#8a7c73}
+body.aftermath{background:#080706}
+body.aftermath .topbar,body.aftermath main,body.aftermath .syslog{display:none}
+
+@media (max-width:760px){
+  :root{--pad:26px;--maxw:100%}
+  .topbar{padding:14px 18px;font-size:11px}
+  .bsub{display:none}
+  .card{margin-top:82px;padding:28px 22px 24px;border-radius:14px}
+  .qtext{font-size:21px;line-height:1.6}
+  body[data-stage="4"] .qtext{font-size:25px}
+  .big{font-size:30px}
+  .syslog{left:18px;right:18px;bottom:14px;max-width:none;font-size:10.5px}
+  .report{padding:5vh 20px 8vh}
+  .rgrid{grid-template-columns:1fr}
+  .rhead h2{font-size:26px}
+  .scores li{grid-template-columns:88px 1fr 60px}
+  .toast{right:12px;left:12px;max-width:none;top:auto;bottom:76px}
+}
+</style>
+</head>
+<body data-stage="0">
+<canvas id="bg"></canvas>
+<div class="grain"></div>
+<div class="scan"></div>
+<div class="vig"></div>
+<div id="flash"></div>
+<div id="flashText"></div>
+<div id="cur"></div>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="dot"></span>
+    <span class="bname">明镜心理</span>
+    <span class="bsep">/</span>
+    <span class="bsub">在线自评中心</span>
+  </div>
+  <div class="status"><span class="rec"></span><span id="clock">00:00</span></div>
+</header>
+
+<main>
+  <section class="card intro" id="card">
+    <div id="introBlock">
+      <h1 class="big">心理健康自评</h1>
+      <p class="lede">本次自评包含 24 道题目，用于初步了解你近两周的情绪、睡眠与注意状态。请凭第一反应作答，不必反复权衡。全部完成约需 8 分钟。结果仅供个人参考。</p>
+      <ul class="meta">
+        <li>24 道题目</li><li>约 8 分钟</li><li>本地作答</li><li>不收集个人数据</li>
+      </ul>
+      <button class="start" id="startBtn">开 始 自 评</button>
+      <p class="fine" id="fineLine">继续即表示你同意：如实作答，不要回头修改已提交的答案。</p>
+    </div>
+
+    <div id="qwrap">
+      <div class="qmeta"><span id="qnum">第 1 题 / 24</span><span class="tag" id="tag">PHQ-9 扩展量表</span></div>
+      <div class="bar"><i id="barfill"></i></div>
+      <h1 class="qtext" id="qtext"></h1>
+      <p class="qsub" id="qsub"></p>
+      <div class="options" id="options"></div>
+      <div class="hint" id="hint"></div>
+    </div>
+  </section>
+  <div class="syslog" id="syslog"></div>
+</main>
+
+<div id="ender"></div>
+<div class="report" id="report"></div>
+<div class="finale" id="scene">
+  <div class="sceneLines" id="sceneLines"></div>
+</div>
+<div id="hud">
+  <div class="hudTop"><span>意识</span><div class="hudbar"><i></i></div><span id="hudPct">100%</span></div>
+  <div id="hudSub"></div>
+</div>
+<div class="struggle" id="struggle"><button id="pushBtn">挣　扎</button></div>
+<div id="after"></div>
+<div id="lid"></div>
+
+<div class="toast" id="toast"></div>
+<div class="dialog" id="dialog"><div class="box" id="dialogBox"></div></div>
+
+<script>
+'use strict';
+/* =========================================================
+   明镜心理 · 心理健康自评（虚构作品）
+   单文件、零依赖、程序化绘制
+   ========================================================= */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const wait = ms => new Promise(r => setTimeout(r, ms));
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const rnd = (a, b) => a + Math.random() * (b - a);
+const pad2 = n => String(n).padStart(2, '0');
+const mmss = s => pad2(Math.floor(s / 60)) + ':' + pad2(Math.floor(s % 60));
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+const LEASE = (() => {
+  const d = new Date();
+  let ref = '无';
+  try { if (document.referrer) ref = new URL(document.referrer).host || '无'; } catch (e) { }
+  return {
+    time: pad2(d.getHours()) + ':' + pad2(d.getMinutes()),
+    date: d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()),
+    tz: (Intl.DateTimeFormat().resolvedOptions().timeZone || '本地时间'),
+    lang: navigator.language || 'zh-CN',
+    screen: (screen.width || 0) + '×' + (screen.height || 0),
+    cores: navigator.hardwareConcurrency || '?',
+    ref
+  };
+})();
+
+const state = {
+  i: 0, name: '匿名', answers: [], locked: true, qStart: 0, stage: -1,
+  lastMs: 0, done: false, t0: Date.now(), attempts: 0
+};
+try {
+  state.attempts = Number(localStorage.getItem('mj_attempts') || 0);
+  const ln = localStorage.getItem('mj_name');
+  if (ln) state.name = ln;
+} catch (e) { }
+
+/* =========================================================
+   声音（全部合成）
+   ========================================================= */
+const Sound = (() => {
+  const AC = window.AudioContext || window.webkitAudioContext;
+  let ctx = null, master = null, drone = null, noise = null, hbTimer = null, hbOn = false;
+
+  function ensure() {
+    if (!AC) return null;
+    if (ctx) { if (ctx.state === 'suspended') ctx.resume().catch(() => { }); return ctx; }
+    try {
+      ctx = new AC();
+      const comp = ctx.createDynamicsCompressor();
+      comp.threshold.value = -20; comp.ratio.value = 8; comp.connect(ctx.destination);
+      master = ctx.createGain(); master.gain.value = 0.0001; master.connect(comp);
+
+      const len = Math.floor(ctx.sampleRate * 2.2);
+      const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+      const data = buf.getChannelData(0);
+      for (let i = 0; i < len; i++) data[i] = Math.random() * 2 - 1;
+
+      const ns = ctx.createBufferSource(); ns.buffer = buf; ns.loop = true;
+      const nf = ctx.createBiquadFilter(); nf.type = 'lowpass'; nf.frequency.value = 340;
+      noise = ctx.createGain(); noise.gain.value = 0;
+      ns.connect(nf); nf.connect(noise); noise.connect(master); ns.start();
+
+      drone = ctx.createGain(); drone.gain.value = 0;
+      const dlp = ctx.createBiquadFilter(); dlp.type = 'lowpass'; dlp.frequency.value = 300;
+      drone.connect(dlp); dlp.connect(master);
+      [55, 55.4, 82.5, 110.2].forEach((f, k) => {
+        const o = ctx.createOscillator();
+        o.type = k === 3 ? 'triangle' : 'sine';
+        o.frequency.value = f;
+        const g = ctx.createGain(); g.gain.value = k === 3 ? 0.10 : 0.42;
+        o.connect(g); g.connect(drone); o.start();
+        const lfo = ctx.createOscillator(); lfo.frequency.value = 0.05 + k * 0.017;
+        const lg = ctx.createGain(); lg.gain.value = 2.2;
+        lfo.connect(lg); lg.connect(o.detune); lfo.start();
+      });
+    } catch (e) { ctx = null; }
+    return ctx;
+  }
+
+  function level(k) {
+    const c = ensure(); if (!c) return;
+    const t = c.currentTime;
+    master.gain.cancelScheduledValues(t);
+    master.gain.setTargetAtTime(Math.max(0.0001, 0.50 + k * 0.36), t, 1.4);
+    drone.gain.setTargetAtTime(Math.max(0, 0.015 + k * 0.13), t, 1.6);
+    noise.gain.setTargetAtTime(Math.max(0, k * 0.030), t, 1.6);
+  }
+
+  function whisper(pan = 0) {
+    const c = ensure(); if (!c) return;
+    const t = c.currentTime + 0.05;
+    const len = Math.floor(c.sampleRate * 1.15);
+    const buf = c.createBuffer(1, len, c.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+    const src = c.createBufferSource(); src.buffer = buf;
+    const bp = c.createBiquadFilter(); bp.type = 'bandpass'; bp.Q.value = 8;
+    bp.frequency.setValueAtTime(880, t);
+    bp.frequency.linearRampToValueAtTime(1550, t + 0.38);
+    bp.frequency.linearRampToValueAtTime(620, t + 0.95);
+    const g = c.createGain(); g.gain.setValueAtTime(0.0001, t);
+    [0, 0.26, 0.48, 0.72].forEach((o, k) => {
+      const s = t + o;
+      g.gain.setValueAtTime(0.0001, s);
+      g.gain.exponentialRampToValueAtTime(0.42 - k * 0.07, s + 0.055);
+      g.gain.exponentialRampToValueAtTime(0.02, s + 0.17);
+    });
+    const p = c.createStereoPanner ? c.createStereoPanner() : null;
+    if (p) p.pan.value = clamp(pan, -1, 1);
+    src.connect(bp); bp.connect(g);
+    if (p) { g.connect(p); p.connect(master); } else { g.connect(master); }
+    src.start(t); src.stop(t + 1.05);
+  }
+
+  function thump(t, vol) {
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = 'sine';
+    o.frequency.setValueAtTime(66, t);
+    o.frequency.exponentialRampToValueAtTime(37, t + 0.17);
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(vol, t + 0.014);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.34);
+    o.connect(g); g.connect(master); o.start(t); o.stop(t + 0.38);
+  }
+  function heart() { const c = ensure(); if (!c) return; const t = c.currentTime + 0.02; thump(t, 0.5); thump(t + 0.23, 0.3); }
+  function startHeart(period = 1150) {
+    if (hbOn) return; hbOn = true; heart(); hbTimer = setInterval(heart, period);
+  }
+
+  function tick(freq = 1500, vol = 0.05) {
+    const c = ensure(); if (!c) return;
+    const t = c.currentTime;
+    const o = c.createOscillator(), g = c.createGain();
+    o.type = 'square'; o.frequency.value = freq;
+    g.gain.setValueAtTime(vol, t);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.06);
+    o.connect(g); g.connect(master); o.start(t); o.stop(t + 0.08);
+  }
+
+  function sting() {
+    const c = ensure(); if (!c) return;
+    const t = c.currentTime;
+    const len = Math.floor(c.sampleRate * 2.0);
+    const buf = c.createBuffer(1, len, c.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) { const e = Math.pow(1 - i / len, 1.5); d[i] = (Math.random() * 2 - 1) * e; }
+    const src = c.createBufferSource(); src.buffer = buf;
+    const hp = c.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 160;
+    const ng = c.createGain(); ng.gain.value = 0.85;
+    src.connect(hp); hp.connect(ng); ng.connect(master); src.start(t);
+    [221, 233, 466, 494, 741].forEach((f, k) => {
+      const o = c.createOscillator();
+      o.type = k % 2 ? 'sawtooth' : 'square';
+      o.frequency.setValueAtTime(f * 1.6, t);
+      o.frequency.exponentialRampToValueAtTime(f * 0.48, t + 1.7);
+      const g = c.createGain();
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(0.11, t + 0.03);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 1.85);
+      o.connect(g); g.connect(master); o.start(t); o.stop(t + 1.9);
+    });
+  }
+
+  function fade(dur = 3) {
+    const c = ensure(); if (!c) return;
+    const t = c.currentTime;
+    master.gain.cancelScheduledValues(t);
+    master.gain.setTargetAtTime(0.0001, t, dur / 3);
+  }
+
+  return { ensure, level, whisper, heart, startHeart, tick, sting, fade, out: () => master };
+})();
+
+/* =========================================================
+   生成式 BGM（随阶段递进：舒缓 → 走调 → 压迫 → 崩坏 → 摇篮曲）
+   ========================================================= */
+const BGM = (() => {
+  let ctx = null, out = null, bus = null, wet = null, rev = null;
+  let drive = null, driveAmt = null;
+  let timer = null, nextT = 0, step = 0, playing = false;
+  let stage = 0, possess = 0, lullaby = false;
+
+  const LOOK = 0.7;
+  const hz = m => 440 * Math.pow(2, (m - 69) / 12);
+
+  // 每阶段四小节和声。0 协和 → 4 半音墙
+  const HARM = [
+    [[45, 57, 60, 64, 67, 71], [41, 53, 57, 60, 64, 67], [36, 48, 55, 59, 64], [43, 55, 59, 62, 67]],
+    [[45, 57, 60, 63, 67, 70], [41, 53, 56, 60, 63, 66], [44, 56, 59, 62, 65], [43, 55, 58, 61, 67]],
+    [[45, 57, 58, 61, 63, 70], [44, 56, 57, 60, 62, 69], [43, 55, 56, 59, 61, 68], [42, 54, 55, 58, 60, 67]],
+    [[45, 56, 57, 58, 63, 70], [44, 55, 56, 57, 62, 69], [43, 54, 55, 56, 61, 68], [42, 53, 54, 55, 60, 67]],
+    [[45, 56, 57, 58, 59, 63], [44, 55, 56, 57, 58, 62], [43, 54, 55, 56, 57, 61], [42, 53, 54, 55, 56, 60]]
+  ];
+  const BPM = [54, 58, 62, 68, 76];
+  // 各阶段总线配平：把 0 阶段抬起来，避免开局太轻、后面炸耳
+  const TRIM = [1.45, 0.48, 0.55, 0.67, 0.76];
+
+  function softClip(k) {
+    const n = 2048, c = new Float32Array(n);
+    for (let i = 0; i < n; i++) {
+      const x = (i / (n - 1)) * 2 - 1;
+      c[i] = Math.tanh(x * k);
+    }
+    return c;
+  }
+
+  function buildReverb() {
+    const len = Math.floor(ctx.sampleRate * 2.7);
+    const ib = ctx.createBuffer(2, len, ctx.sampleRate);
+    for (let ch = 0; ch < 2; ch++) {
+      const d = ib.getChannelData(ch);
+      for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2.8);
+    }
+    const cv = ctx.createConvolver();
+    cv.buffer = ib;
+    return cv;
+  }
+
+  function start() {
+    if (playing) return true;
+    const c = Sound.ensure();
+    if (!c) return false;
+    ctx = c;
+    out = Sound.out();
+    if (!out) return false;
+
+    bus = ctx.createGain();
+    bus.gain.value = 0.0001;
+    driveAmt = ctx.createGain();
+    driveAmt.gain.value = 1.1;
+    drive = ctx.createWaveShaper();
+    drive.curve = softClip(2.2);
+    drive.oversample = '2x';
+    bus.connect(driveAmt);
+    driveAmt.connect(drive);
+    drive.connect(out);
+
+    rev = buildReverb();
+    rev.connect(out);
+    wet = ctx.createGain();
+    wet.gain.value = 0.6;
+    wet.connect(rev);
+
+    playing = true;
+    nextT = ctx.currentTime + 0.18;
+    step = 0;
+    bus.gain.setTargetAtTime(TRIM[0], ctx.currentTime, 1.4);
+    timer = setInterval(tick, 90);
+    return true;
+  }
+
+  function tick() {
+    if (!playing || !ctx) return;
+    if (nextT < ctx.currentTime - 0.6) nextT = ctx.currentTime + 0.05;
+    try {
+      const bpm = possess ? 126 : (lullaby ? 48 : (BPM[stage] || 56));
+      const s8 = 60 / bpm / 2;
+      let guard = 0;
+      while (nextT < ctx.currentTime + LOOK && guard++ < 80) {
+        scheduleStep(step, nextT, s8);
+        step++;
+        nextT += s8;
+      }
+    } catch (e) { /* 静默失败，音轨不能拖垮页面 */ }
+  }
+
+  function scheduleStep(step, t, s8) {
+    const bar = Math.floor(step / 8) % 4;
+    const k = step % 8;
+
+    if (lullaby) {
+      if (k === 0) pad([45, 52, 57, 60], t, s8 * 8, 0.55);
+      const motif = [81, 76, 78, 75, 76, 72, 75, 69];
+      if (k % 2 === 0) box(motif[(step + bar) % motif.length], t + 0.02);
+      if (k === 0 && bar === 0) pulse(t, 0.07);
+      return;
+    }
+
+    if (k === 0) pad(HARM[Math.min(stage, 4)][bar], t, s8 * 8);
+    if (k % 2 === 0 && (stage < 4 || Math.random() < 0.55)) {
+      const chord = HARM[Math.min(stage, 4)][bar];
+      const pick = chord[2 + ((k / 2) % (chord.length - 2))] + 12 + (stage >= 2 && Math.random() < 0.22 ? 1 : 0);
+      arp(pick, t + (stage >= 3 ? Math.random() * 0.05 : 0), 0.9 + stage * 0.15);
+    }
+    if (stage >= 2 && k % 4 === 0) pulse(t, 0.14 + stage * 0.03);
+    if (stage >= 4 && k === 2) pulse(t, 0.09);
+    if (possess && k % 2 === 0) pulse(t, 0.18);
+    if (possess && k === 0) glide(t, 0.55 + Math.random() * 0.2);
+  }
+
+  function pad(notes, t, dur, gainScale) {
+    const g = ctx.createGain();
+    const peak = (0.20 / Math.max(3, notes.length)) * (1 + stage * 0.12) * (gainScale || 1);
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.linearRampToValueAtTime(peak, t + Math.min(2.8, dur * 0.45));
+    g.gain.setTargetAtTime(0.0001, t + dur * 0.92, 1.2);
+    g.connect(bus);
+    const send = ctx.createGain();
+    send.gain.value = 0.42;
+    g.connect(send);
+    send.connect(wet);
+
+    const lp = ctx.createBiquadFilter();
+    lp.type = 'lowpass';
+    lp.frequency.setValueAtTime(320 + stage * 300, t);
+    lp.Q.value = 0.8;
+    lp.connect(g);
+
+    notes.forEach((m, i) => {
+      const f = hz(m);
+      const o = ctx.createOscillator();
+      o.type = stage >= 3 ? 'sawtooth' : 'triangle';
+      o.frequency.value = f;
+      o.detune.value = (i % 2 ? -1 : 1) * (2 + stage * 8);
+      const gg = ctx.createGain();
+      gg.gain.value = 0.85;
+      o.connect(gg);
+      gg.connect(lp);
+      o.start(t);
+      o.stop(t + dur + 2.4);
+    });
+  }
+
+  function arp(m, t, dur) {
+    const o = ctx.createOscillator();
+    o.type = stage >= 3 ? 'triangle' : 'sine';
+    o.frequency.value = hz(m);
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.linearRampToValueAtTime(0.038, t + 0.014);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    const send = ctx.createGain();
+    send.gain.value = 0.75;
+    o.connect(g);
+    g.connect(bus);
+    g.connect(send);
+    send.connect(wet);
+    o.start(t);
+    o.stop(t + dur + 0.1);
+  }
+
+  function box(m, t) {
+    const o = ctx.createOscillator();
+    o.type = 'sine';
+    o.frequency.value = hz(m);
+    o.detune.value = 7;
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.linearRampToValueAtTime(0.045, t + 0.004);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 1.5);
+    const send = ctx.createGain();
+    send.gain.value = 1.0;
+    o.connect(g);
+    g.connect(bus);
+    g.connect(send);
+    send.connect(wet);
+    o.start(t);
+    o.stop(t + 1.6);
+  }
+
+  function pulse(t, vol) {
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.type = 'sine';
+    o.frequency.setValueAtTime(74, t);
+    o.frequency.exponentialRampToValueAtTime(37, t + 0.24);
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.linearRampToValueAtTime(vol, t + 0.012);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.4);
+    o.connect(g);
+    g.connect(bus);
+    o.start(t);
+    o.stop(t + 0.45);
+  }
+
+  function glide(t, vol) {
+    const o = ctx.createOscillator();
+    o.type = 'sawtooth';
+    const f0 = 90 + Math.random() * 60;
+    o.frequency.setValueAtTime(f0, t);
+    o.frequency.exponentialRampToValueAtTime(f0 * 2.6, t + 0.9);
+    const bp = ctx.createBiquadFilter();
+    bp.type = 'bandpass';
+    bp.Q.value = 4;
+    bp.frequency.setValueAtTime(600, t);
+    bp.frequency.exponentialRampToValueAtTime(2400, t + 0.85);
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.linearRampToValueAtTime(vol * 0.09, t + 0.08);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 1.0);
+    o.connect(bp);
+    bp.connect(g);
+    g.connect(bus);
+    o.start(t);
+    o.stop(t + 1.1);
+  }
+
+  function riser(dur) {
+    const c = Sound.ensure();
+    if (!c) return;
+    const t = c.currentTime;
+    const o = c.createOscillator();
+    o.type = 'sawtooth';
+    o.frequency.setValueAtTime(40, t);
+    o.frequency.exponentialRampToValueAtTime(520, t + dur);
+    const bp = c.createBiquadFilter();
+    bp.type = 'bandpass';
+    bp.Q.value = 3;
+    bp.frequency.setValueAtTime(200, t);
+    bp.frequency.exponentialRampToValueAtTime(2600, t + dur);
+    const g = c.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.linearRampToValueAtTime(0.16, t + dur * 0.85);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur + 0.4);
+    o.connect(bp);
+    bp.connect(g);
+    g.connect(bus);
+    o.start(t);
+    o.stop(t + dur + 0.5);
+  }
+
+  return {
+    start,
+    setStage(n) {
+      stage = clamp(n, 0, 4);
+      if (bus) bus.gain.setTargetAtTime(TRIM[stage], ctx.currentTime, 1.2);
+      if (driveAmt) driveAmt.gain.setTargetAtTime(1.0 + stage * 0.9, ctx.currentTime, 1.4);
+    },
+    possess() {
+      if (!start()) return;
+      possess = 1;
+      riser(9.5);
+    },
+    cut() {
+      if (!playing) return;
+      if (bus) bus.gain.setTargetAtTime(0.0001, ctx.currentTime, 0.12);
+      clearInterval(timer);
+      timer = null;
+      playing = false;
+      possess = 0;
+    },
+    lullaby() {
+      possess = 0;
+      lullaby = true;
+      stage = 0;
+      if (!start()) return;
+      if (bus) bus.gain.setTargetAtTime(0.75, ctx.currentTime, 2);
+    },
+    debug: () => ({ playing, stage, step, possess, lullaby, bus: bus ? bus.gain.value : null }),
+    fade(sec) {
+      if (!playing) return;
+      if (bus) bus.gain.setTargetAtTime(0.0001, ctx.currentTime, sec / 3);
+    }
+  };
+})();
+
+
+/* =========================================================
+   程序化的一张脸
+   ========================================================= */
+const Face = (() => {
+  const cv = $('#bg');
+  const ctx = cv.getContext('2d', { alpha: true });
+  const fb = { cx: 0, cy: 0, rx: 0 };
+  let W = 0, H = 0, dpr = 1;
+  let buf = null, bctx = null, bimg = null, bw = 0, bh = 0;
+  let mode = 'off';           // off | stage | scene
+  let alpha = 0, target = 0;
+  let t0 = performance.now(), lastT = 0, lastPaint = -1e9;
+  const mouse = { x: 0.5, y: 0.62 };
+  const gaze = { x: 0, y: 0 };
+  let blinkT = 0, nextBlink = 2.4, blink = 0;
+  let mouth = 0, mouthTarget = 0, approach = 0, glitch = 0;
+
+  document.addEventListener('pointermove', e => {
+    mouse.x = e.clientX / Math.max(1, innerWidth);
+    mouse.y = e.clientY / Math.max(1, innerHeight);
+  }, { passive: true });
+
+  function resize() {
+    dpr = Math.min(window.devicePixelRatio || 1, 1.6);
+    W = cv.width = Math.max(320, Math.round(innerWidth * dpr));
+    H = cv.height = Math.max(320, Math.round(innerHeight * dpr));
+    layout();
+  }
+  function layout() {
+    const scene = mode === 'scene';
+    fb.cx = W * 0.5; glow = null;
+    fb.cy = H * (scene ? 0.415 : 0.45);
+    fb.rx = scene ? Math.min(W * 0.27, H * 0.33) : Math.min(W * 0.20, H * 0.27);
+    const s = scene ? 0.52 : 0.46;
+    bw = Math.max(72, Math.round(fb.rx * 2.4 * s));
+    bh = Math.round(bw * 1.16);
+    buf = document.createElement('canvas');
+    buf.width = bw; buf.height = bh;
+    bctx = buf.getContext('2d');
+    bimg = bctx.createImageData(bw, bh);
+  }
+
+  function paint(now) {
+    const w = bw, h = bh, d = bimg.data;
+    const cx = w * 0.5, cy = h * 0.52, rx = w * 0.445, ry = h * 0.452;
+    const exOff = rx * 0.315, eyL = cy - ry * 0.125, eyR = cy - ry * 0.068;
+    const er = rx * 0.168;
+    const eyes = [{ x: cx - exOff, y: eyL, r: er }, { x: cx + exOff, y: eyR, r: er * 1.05 }];
+    const gx = gaze.x * er * 0.36, gy = gaze.y * er * 0.26;
+    const breath = 1 + Math.sin(now / 3200) * 0.006;
+    const mx = cx, my = cy + ry * 0.365;
+
+    for (let y = 0; y < h; y++) {
+      const ny0 = (y - cy) / (ry * breath);
+      const taper = 1 - 0.22 * clamp((ny0 - 0.02) / 0.80, 0, 1);
+      for (let x = 0; x < w; x++) {
+        const i = (y * w + x) * 4;
+        const nx = (x - cx) / (rx * taper);
+        const dd = nx * nx + ny0 * ny0;
+        if (dd > 1.05) { d[i + 3] = 0; continue; }
+
+        let v = 7 + Math.pow(Math.max(0, 1 - dd), 0.85) * 24;
+        const light = clamp(0.62 - nx * 0.52 - ny0 * 0.56, 0, 1.5);
+        v *= 0.22 + light * 1.05;
+        v *= 1 - 0.34 * clamp((ny0 - 0.42) / 0.58, 0, 1);
+
+        const cheek = Math.exp(-Math.pow((Math.abs(nx) - 0.55) / 0.18, 2)) * Math.exp(-Math.pow((ny0 - 0.12) / 0.26, 2));
+        v *= 1 - 0.24 * cheek;
+        const brow = Math.exp(-Math.pow((Math.abs(nx) - 0.30) / 0.14, 2)) * Math.exp(-Math.pow((ny0 + 0.30) / 0.10, 2));
+        v *= 1 - 0.30 * brow;
+
+        let sock = 0;
+        for (let e = 0; e < 2; e++) {
+          const E = eyes[e];
+          sock = Math.max(sock, Math.hypot(x - E.x, y - E.y) / (E.r * 2.45));
+        }
+        v *= 1 - 0.80 * Math.pow(clamp(1 - sock, 0, 1), 1.2);
+
+        if (Math.abs(nx) < 0.045 && ny0 > -0.34 && ny0 < 0.12) v *= 1.05;
+
+        const dlip = Math.hypot((x - mx) / (rx * 0.46), (y - (my + ry * 0.01)) / (ry * 0.14));
+        if (dlip < 1) v *= 0.72 + 0.28 * dlip;
+
+        const nz = (((x * 131 + y * 197 + ((x * y) % 13) * 7) % 23) / 23 - 0.5) * 9;
+        v += nz;
+        v *= 1 - 0.92 * Math.pow(clamp((dd - 0.60) / 0.45, 0, 1), 1.25);
+
+        let R = v * 1.03, G = v * 0.89, B = v * 0.83;
+
+        for (let e = 0; e < 2; e++) {
+          const E = eyes[e];
+          const u = x - E.x, vv = y - E.y;
+          const sx = E.r * 1.34, sy = E.r * 0.54;
+          const q = (u * u) / (sx * sx) + (vv * vv) / (sy * sy);
+          if (q > 1) continue;
+          const lidY = (E.y - sy) + 2 * sy * blink;
+          if (y < lidY) {
+            R *= 0.74; G *= 0.7; B *= 0.67;
+            if (Math.abs(y - (lidY - 2.4)) < 1.2) { R *= 0.5; G *= 0.47; B *= 0.45; }
+            continue;
+          }
+          const qq = Math.sqrt(clamp(q, 0, 1));
+          const shade = 0.42 + 0.58 * (1 - qq);
+          let sr = 96 * shade, sg = 90 * shade, sb = 76 * shade;
+          const edge = Math.pow(qq, 7);
+          sr += 34 * edge; sg -= 10 * edge; sb -= 14 * edge;
+          const up = clamp((y - (E.y - sy)) / (sy * 1.2), 0, 1);
+          const lidShade = 0.34 + 0.66 * Math.min(1, up * 1.5);
+          sr *= lidShade; sg *= lidShade; sb *= lidShade;
+
+          const iu = u - gx, iw = vv - gy;
+          const ir = E.r * 0.50;
+          const iq = (iu * iu + iw * iw) / (ir * ir);
+          if (iq < 1) {
+            const tt = Math.sqrt(iq);
+            const fib = 0.5 + 0.5 * Math.sin(Math.atan2(iw, iu) * 13 + e * 2.3);
+            sr = 18 + 11 * fib * (1 - tt);
+            sg = 12 + 6 * fib * (1 - tt);
+            sb = 8 + 2 * fib * (1 - tt);
+            if (iq > 0.84) { sr *= 0.45; sg *= 0.45; sb *= 0.45; }
+            const pr = ir * 0.60;
+            if (iu * iu + iw * iw < pr * pr) { sr = 1; sg = 1; sb = 1; }
+            const hx = -ir * 0.28, hy = -ir * 0.32, hr = ir * 0.075;
+            if ((iu - hx) * (iu - hx) + (iw - hy) * (iw - hy) < hr * hr) { sr = 132; sg = 128; sb = 120; }
+          }
+          if (Math.abs(y - (E.y + sy * 0.97)) < 1.0) { sr *= 0.55; sg *= 0.55; sb *= 0.55; }
+          R = sr; G = sg; B = sb;
+        }
+
+        d[i] = clamp(R, 0, 255);
+        d[i + 1] = clamp(G, 0, 255);
+        d[i + 2] = clamp(B, 0, 255);
+        d[i + 3] = 255 * clamp((1.05 - dd) / 0.09, 0, 1);
+      }
+    }
+    bctx.putImageData(bimg, 0, 0);
+
+    // ---- 鼻影 ----
+    bctx.save();
+    const nostril = (sx) => {
+      const g = bctx.createRadialGradient(mx + sx, my - ry * 0.13, 0, mx + sx, my - ry * 0.13, rx * 0.042);
+      g.addColorStop(0, 'rgba(4,3,3,0.8)');
+      g.addColorStop(1, 'rgba(4,3,3,0)');
+      bctx.fillStyle = g;
+      bctx.beginPath();
+      bctx.arc(mx + sx, my - ry * 0.13, rx * 0.042, 0, 7);
+      bctx.fill();
+    };
+    nostril(-rx * 0.058); nostril(rx * 0.058);
+    const nsh = bctx.createRadialGradient(mx - rx * 0.05, cy - ry * 0.10, rx * 0.01, mx - rx * 0.05, cy - ry * 0.10, rx * 0.20);
+    nsh.addColorStop(0, 'rgba(0,0,0,0.30)');
+    nsh.addColorStop(1, 'rgba(0,0,0,0)');
+    bctx.fillStyle = nsh;
+    bctx.beginPath();
+    bctx.ellipse(mx - rx * 0.05, cy - ry * 0.10, rx * 0.20, ry * 0.26, 0, 0, 7);
+    bctx.fill();
+    bctx.restore();
+
+    // ---- 嘴 ----
+    const mw = rx * (0.32 + mouth * 0.10);
+    const mh = ry * (0.02 + mouth * 0.15);
+    bctx.save();
+    bctx.beginPath();
+    bctx.moveTo(mx - mw, my - ry * 0.008);
+    bctx.quadraticCurveTo(mx - mw * 0.4, my + ry * 0.016 + mouth * ry * 0.02, mx, my + ry * 0.004);
+    bctx.quadraticCurveTo(mx + mw * 0.44, my + ry * 0.020 + mouth * ry * 0.02, mx + mw, my - ry * 0.014);
+    if (mouth > 0.03) {
+      bctx.lineTo(mx + mw * 0.80, my + ry * 0.016 + mh * 0.85);
+      bctx.quadraticCurveTo(mx, my + ry * 0.03 + mh * 1.55, mx - mw * 0.80, my + ry * 0.016 + mh * 0.85);
+    }
+    bctx.closePath();
+    bctx.fillStyle = 'rgba(8,3,3,' + (0.6 + 0.35 * mouth) + ')';
+    bctx.fill();
+
+    if (mouth > 0.34) {
+      let tx = mx - mw * 0.70;
+      for (let k = 0; k < 7; k++) {
+        const wgt = mw * 0.16 * (0.75 + 0.55 * (((k * 7) % 5) / 5));
+        const hgt = mh * (0.34 + 0.55 * (((k * 3) % 4) / 4));
+        bctx.beginPath();
+        bctx.moveTo(tx, my + ry * 0.006);
+        bctx.lineTo(tx + wgt * 0.86, my + ry * 0.006);
+        bctx.lineTo(tx + wgt * 0.74, my + ry * 0.006 + hgt);
+        bctx.lineTo(tx + wgt * 0.16, my + ry * 0.006 + hgt * 0.88);
+        bctx.closePath();
+        const gk = 0.42 + 0.22 * (((k * 5) % 3) / 3);
+        bctx.fillStyle = 'rgba(' + Math.round(96 + k * 3) + ',' + Math.round(88 + k * 2) + ',' + Math.round(74 + k * 2) + ',' + gk + ')';
+        bctx.fill();
+        tx += wgt * 1.08;
+      }
+      const g = bctx.createLinearGradient(0, my + ry * 0.03, 0, my + mh * 1.2);
+      g.addColorStop(0, 'rgba(0,0,0,0)');
+      g.addColorStop(1, 'rgba(0,0,0,0.9)');
+      bctx.fillStyle = g;
+      bctx.fillRect(mx - mw, my + mh * 0.35, mw * 2, mh * 1.3);
+    }
+
+    bctx.strokeStyle = 'rgba(40,18,16,0.55)';
+    bctx.lineWidth = 1.1;
+    bctx.beginPath();
+    bctx.moveTo(mx - mw, my - ry * 0.010);
+    bctx.quadraticCurveTo(mx, my - ry * 0.018, mx + mw, my - ry * 0.020);
+    bctx.stroke();
+    bctx.restore();
+
+    // ---- 头发 ----
+    bctx.save();
+    bctx.lineCap = 'round';
+    for (let k = 0; k < 78; k++) {
+      const r1 = ((k * 73) % 101) / 101;
+      const r2 = ((k * 37) % 97) / 97;
+      const a = Math.PI + Math.PI * r1;
+      const sx0 = cx + Math.cos(a) * rx * 0.99;
+      const sy0 = cy + Math.sin(a) * ry * 0.99;
+      const side = Math.abs(Math.cos(a));
+      const len = ry * (0.30 + 0.95 * r2) * (0.55 + 0.75 * side);
+      const sway = Math.sin(now / 5200 + k * 0.9) * rx * 0.018;
+      const ex = sx0 + (cx - sx0) * (0.18 + 0.34 * r2) + sway;
+      const ey = Math.min(cy + ry * 1.04, sy0 + len);
+      const lw = 0.6 + 1.9 * side * (0.5 + 0.5 * r2);
+      bctx.strokeStyle = 'rgba(6,5,5,' + (0.42 + 0.45 * r2) + ')';
+      bctx.lineWidth = lw;
+      bctx.beginPath();
+      bctx.moveTo(sx0, sy0);
+      bctx.bezierCurveTo(sx0 + sway * 2, sy0 + len * 0.32, ex - sway * 3, sy0 + len * 0.74, ex, ey);
+      bctx.stroke();
+      bctx.strokeStyle = 'rgba(84,72,64,' + (0.05 + 0.08 * r2) + ')';
+      bctx.lineWidth = lw * 0.5;
+      bctx.beginPath();
+      bctx.moveTo(sx0 + 1.2, sy0 + 1);
+      bctx.bezierCurveTo(sx0 + sway * 2 + 1, sy0 + len * 0.32, ex - sway * 3 + 1, sy0 + len * 0.74, ex + 1, ey);
+      bctx.stroke();
+    }
+    bctx.restore();
+  }
+
+  function roundRect(c, x, y, w, h, r) {
+    c.beginPath();
+    c.moveTo(x + r, y);
+    c.arcTo(x + w, y, x + w, y + h, r);
+    c.arcTo(x + w, y + h, x, y + h, r);
+    c.arcTo(x, y + h, x, y, r);
+    c.arcTo(x, y, x + w, y, r);
+    c.closePath();
+  }
+
+  function drawHands(now) {
+    const rise = clamp((now - t0) / 24000, 0, 1);
+    const k = Math.min(W, H) / 900;
+    drawHand(W * 0.02 - Math.sin(now / 2600) * W * 0.008, H * (1.10 - rise * 0.30), -1, k, now, 0);
+    drawHand(W * 0.98 + Math.sin(now / 2900) * W * 0.008, H * (1.06 - rise * 0.26), 1, k, now, 1);
+  }
+  function drawHand(x, y, side, k, now, idx) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.scale(side * k, k);
+    ctx.rotate(-0.22 + Math.sin(now / 3200 + idx * 2) * 0.02);
+    ctx.fillStyle = '#050404';
+    ctx.shadowColor = 'rgba(0,0,0,1)';
+    ctx.shadowBlur = 50;
+    ctx.strokeStyle = 'rgba(96,38,30,0.20)';
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(-100, 340);
+    ctx.quadraticCurveTo(-135, 60, -46, -46);
+    ctx.quadraticCurveTo(44, -96, 116, -18);
+    ctx.quadraticCurveTo(158, 130, 126, 360);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    const sw = Math.sin(now / 1900 + idx) * 0.02;
+    for (let f = 0; f < 4; f++) {
+      ctx.save();
+      ctx.translate(58 + f * 24, -52 + f * 4);
+      ctx.rotate(-1.05 + f * 0.33 + sw);
+      roundRect(ctx, -13, -(215 + f * 6), 27, (238 + f * 8), 13);
+      ctx.fill();
+      ctx.restore();
+    }
+    ctx.save();
+    ctx.translate(-74, 52);
+    ctx.rotate(-0.62);
+    roundRect(ctx, -16, -152, 32, 186, 16);
+    ctx.fill();
+    ctx.restore();
+    ctx.restore();
+  }
+
+  let glow = null;
+  function composite(now) {
+    if (alpha < 0.002) { ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, W, H); return; }
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, W, H);
+
+    if (mode === 'scene') {
+      if (!glow) {
+        glow = ctx.createRadialGradient(fb.cx, fb.cy * 0.96, 20, fb.cx, fb.cy, Math.max(W, H) * 0.72);
+        glow.addColorStop(0, 'rgba(46,37,32,0.98)');
+        glow.addColorStop(0.34, 'rgba(14,11,10,0.96)');
+        glow.addColorStop(0.72, 'rgba(3,3,3,1)');
+        glow.addColorStop(1, 'rgba(0,0,0,1)');
+      }
+      ctx.fillStyle = glow;
+      ctx.fillRect(0, 0, W, H);
+    }
+
+    if (now - lastPaint > (mode === 'scene' ? 70 : 90)) { paint(now); lastPaint = now; }
+
+    const dw = fb.rx * 2.62 * (1 + approach * 0.72);
+    const dh = dw * 1.16;
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.filter = mode === 'scene' ? 'none' : 'blur(4px)';
+    ctx.imageSmoothingEnabled = true;
+    ctx.drawImage(buf, fb.cx - dw / 2, fb.cy - dh / 2, dw, dh);
+    ctx.restore();
+
+    if (mode === 'scene') drawHands(now);
+
+    if (glitch > 0.01) {
+      const n = Math.round(7 * glitch);
+      for (let k = 0; k < n; k++) {
+        const sy = Math.random() * H * 0.92;
+        const sh = Math.random() * 46 * dpr + 6;
+        const dx = (Math.random() - 0.5) * 44 * dpr * glitch;
+        ctx.drawImage(cv, 0, sy, W, sh, dx, sy, W, sh);
+      }
+      ctx.fillStyle = 'rgba(160,25,12,' + (0.05 * glitch) + ')';
+      ctx.fillRect(0, 0, W, H);
+    }
+  }
+
+  function step(now) {
+    requestAnimationFrame(step);
+    const dt = Math.min(0.07, Math.max(0.001, (now - lastT) / 1000));
+    lastT = now;
+
+    alpha += (target - alpha) * Math.min(1, dt * 1.9);
+    glitch = Math.max(0, glitch - dt * 2.6);
+    mouth += (mouthTarget - mouth) * Math.min(1, dt * 2.4);
+    approach += ((mode === 'scene' && mouthTarget > 0.8) ? 1 - approach : 0 - approach) * Math.min(1, dt * 0.7);
+
+    nextBlink -= dt;
+    if (nextBlink <= 0) { blinkT = 0.24; nextBlink = 2.4 + Math.random() * 5.5; }
+    if (blinkT > 0) { blinkT -= dt; blink = clamp(1 - Math.abs(blinkT / 0.12 - 1), 0, 1); } else blink = 0;
+
+    const tx = (mouse.x - 0.5) * 2.4, ty = (mouse.y - 0.5) * 2.4;
+    gaze.x += (clamp(tx, -1.4, 1.4) - gaze.x) * Math.min(1, dt * 5);
+    gaze.y += (clamp(ty, -1.2, 1.2) - gaze.y) * Math.min(1, dt * 5);
+
+    composite(now);
+  }
+
+  return {
+    boot() { resize(); lastT = performance.now(); requestAnimationFrame(step); },
+    stageFace(a) { mode = 'stage'; target = a; layout(); },
+    scene() {
+      mode = 'scene'; target = 0; layout(); t0 = performance.now();
+      setTimeout(() => { target = 1; }, 2600);
+      setTimeout(() => { mouthTarget = 0.22; }, 12000);
+    },
+    approach() { mouthTarget = 1; target = 1; },
+    fadeOut() { target = 0; },
+    blur(k) { glitch = Math.max(glitch, k); },
+    resize
+  };
+})();
+window.addEventListener('resize', () => Face.resize());
+
+/* =========================================================
+   小工具：系统日志 / 大字闪现 / 通知 / 弹窗
+   ========================================================= */
+const syslog = $('#syslog');
+function clockStr() {
+  const d = new Date();
+  return pad2(d.getHours()) + ':' + pad2(d.getMinutes()) + ':' + pad2(d.getSeconds());
+}
+async function say(text, hold) {
+  if (!text) return;
+  const line = document.createElement('div');
+  line.className = 'line';
+  const ts = document.createElement('span'); ts.className = 'ts'; ts.textContent = clockStr();
+  const tx = document.createElement('span'); tx.className = 'tx'; tx.textContent = text;
+  line.appendChild(ts); line.appendChild(tx);
+  syslog.appendChild(line);
+  while (syslog.children.length > 5) syslog.removeChild(syslog.firstChild);
+  await wait(16);
+  line.classList.add('in');
+  const ms = hold ?? clamp(text.length * 72, 1200, 4200);
+  await wait(ms);
+}
+
+let typingCtl = null;
+function typeText(el, text, speed = 32) {
+  return new Promise(resolve => {
+    el.textContent = '';
+    el.classList.add('typing');
+    let i = 0, timer = null, done = false;
+    const finish = () => {
+      if (done) return; done = true;
+      clearTimeout(timer); typingCtl = null;
+      el.textContent = text;
+      el.classList.remove('typing');
+      resolve();
+    };
+    const tick = () => {
+      i++;
+      el.textContent = text.slice(0, i);
+      if (i >= text.length) return finish();
+      let d = speed;
+      const ch = text[i - 1];
+      if ('。？！'.includes(ch)) d += 260;
+      else if ('，、；：'.includes(ch)) d += 130;
+      timer = setTimeout(tick, d);
+    };
+    typingCtl = { skip: finish, el };
+    timer = setTimeout(tick, 110);
+  });
+}
+function skipTyping() { if (typingCtl) typingCtl.skip(); }
+document.addEventListener('pointerdown', skipTyping, true);
+
+let flashTimer = null;
+function flashText(text, ms = 900) {
+  const el = $('#flashText');
+  el.textContent = text;
+  el.classList.add('on');
+  clearTimeout(flashTimer);
+  return new Promise(res => {
+    flashTimer = setTimeout(() => { el.classList.remove('on'); res(); }, ms);
+  });
+}
+
+function toast(title, body, ms = 6000) {
+  const el = $('#toast');
+  el.innerHTML = '';
+  const b = document.createElement('b'); b.textContent = title;
+  const p = document.createElement('div'); p.textContent = body;
+  el.appendChild(b); el.appendChild(p);
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), ms);
+}
+
+function dialog(title, body, okText, cancelText) {
+  return new Promise(res => {
+    const d = $('#dialog'), box = $('#dialogBox');
+    box.innerHTML = '';
+    const h = document.createElement('h4'); h.textContent = title;
+    const p = document.createElement('p'); p.textContent = body;
+    const row = document.createElement('div'); row.className = 'row';
+    const no = document.createElement('button'); no.textContent = cancelText || '不允许';
+    const yes = document.createElement('button'); yes.className = 'pri'; yes.textContent = okText || '允许';
+    no.onclick = () => { d.classList.remove('show'); res(false); };
+    yes.onclick = () => { d.classList.remove('show'); res(true); };
+    row.appendChild(no); row.appendChild(yes);
+    box.appendChild(h); box.appendChild(p); box.appendChild(row);
+    d.classList.add('show');
+  });
+}
+
+/* =========================================================
+   题目
+   ========================================================= */
+const CL = ['完全没有', '有几天', '一半以上的天数', '几乎每天'];
+const SYM = ['从不', '偶尔', '经常', '一直'];
+
+const BANK = [
+  {
+    type: 'text',
+    text: '开始之前，我们想知道：你希望被怎么称呼？',
+    sub: '这个名字只会出现在这一次自评里。',
+    hint: '输入后按回车',
+    options: [{
+      t: '继续', value: '',
+      sys: () => `记录。${state.name}。好名字。`
+    }]
+  },
+  {
+    text: '在过去的两周里，你做事情时是否感到兴趣减退，或者没有愉快感？',
+    options: CL.map(t => ({ t })),
+    sys: () => `第 2 题已记录 · 用时 ${(state.lastMs / 1000).toFixed(1)} 秒`
+  },
+  {
+    text: '在过去的两周里，你是否感到心情低落、沮丧，或者觉得没有希望？',
+    options: CL.map(t => ({ t })),
+    sys: () => `会话参数：${LEASE.tz} · ${LEASE.screen} · 语言 ${LEASE.lang}`
+  },
+  {
+    text: '你是否经常坐着不安，或者相反的——安静得让人有点担心？',
+    options: [{ t: '坐立不安' }, { t: '过分安静' }, { t: '两者都有' }, { t: '我不确定' }],
+    sys: '参考值已保存。'
+  },
+  {
+    text: '你是否反复责备自己，或者觉得，你让所有人失望了？',
+    options: [{ t: '从不' }, { t: '偶尔' }, { t: '经常' }, { t: '我一直是那个让人失望的人' }],
+    sys: '你的用词已经被标记。'
+  },
+  {
+    text: '你有没有过这种经历：走进一个房间，却突然忘了自己为什么进来。',
+    options: [{ t: '从不' }, { t: '偶尔' }, { t: '经常' }, { t: '……现在就在发生' }],
+    sys: '你上一次走进去的那个房间，不是这一间。'
+  },
+  {
+    text: '你是否总觉得，房间里的东西被谁动过，位置和你记忆中不一样。',
+    options: [{ t: '没有，是我记错了' }, { t: '有过一两次' }, { t: '经常' }, { t: '不是被移动，是被使用过' }],
+    sys: '我们核对过了。第三次。'
+  },
+  {
+    text: '你是否有时感觉，有人在你没有看的时候，看着你？',
+    options: [{ t: '从来没有' }, { t: '偶尔' }, { t: '很频繁' }, { t: '现在就在看' }],
+    sys: '不必紧张。注视是双向的。'
+  },
+  {
+    text: '过去一周里，你是否有过这样的瞬间：听见有人叫你的名字，但房间里没有人。',
+    options: [{ t: '没有' }, { t: '有，一次' }, { t: '有，很多次' }, { t: '刚才就有' }],
+    sys: () => `${state.name}。……不必回答那次。`
+  },
+  {
+    text: '最近，你是否听见一些别人听不见的声音？',
+    sub: '请只根据最近七天作答。',
+    options: [{ t: '没有' }, { t: '有，像很远的呼吸' }, { t: '有，像有人贴着耳朵说话' }, { t: '正在听' }],
+    onShow() {
+      setTimeout(() => { Sound.whisper(-0.7); }, 4200);
+      setTimeout(() => { Sound.whisper(0.75); }, 9000);
+    },
+    sys: '提示：本页没有音频播放器。'
+  },
+  {
+    text: '你是否觉得，自己的记忆出现了空白——几分钟、几个小时，甚至一整天？',
+    options: [{ t: '没有' }, { t: '偶尔有几秒' }, { t: '经常' }, { t: '我不确定哪些记忆是我的' }],
+    sys: '第 10 题和第 10 题之间，隔了四分钟。'
+  },
+  {
+    text: '你是否觉得，自己正在被测试——而测试的目的，不是你一开始以为的那个？',
+    options: [{ t: '不是' }, { t: '有一点' }, { t: '是的' }, { t: '我一直知道' }],
+    sys: '很好。你开始理解了。'
+  },
+  {
+    text: '今天到目前为止，你有过多少次，是独自一人回答这些问题的？',
+    options: [{ t: '一直是我一个人' }, { t: '大部分时候' }, { t: '有时候不是' }, { t: '现在不是' }],
+    onShow() {
+      setTimeout(async () => {
+        if (state.locked || state.done || state.i !== 12) return;
+        const ok = await dialog(
+          '明镜心理 想要访问你的麦克风',
+          '用于环境噪声校准。音频不会被保存，只用于判断房间里的声源数量。',
+          '允许', '不允许'
+        );
+        if (state.i !== 12) return;
+        await say(ok ? '校准完成。环境里有两个呼吸声。' : '你已经拒绝过了。没关系，我们还有别的方式。');
+      }, 2400);
+    },
+    sys: '我们数过了。比你记得的多。'
+  },
+  {
+    text: '请确认：你现在坐着的这个房间，和你今天早上醒来时的房间，是同一个吗？',
+    options: [{ t: '是' }, { t: '应该是' }, { t: '我不确定' }, { t: '不是' }],
+    sys: '门的位置对得上。窗帘对不上。'
+  },
+  {
+    text: '有没有人，在你睡着的时候，碰过你的头发？',
+    options: [{ t: '没有' }, { t: '有，我以为是在做梦' }, { t: '有，而且我知道是谁' }, { t: '我从不睡觉' }],
+    sys: '我们只是把头发从你脸上拨开。'
+  },
+  {
+    type: 'slider',
+    text: '从 0 到 100，你觉得「被理解」的程度是多少？',
+    sub: '拖动滑块，然后提交。',
+    options: [{ t: '提交这个数字' }],
+    sys: v => `你选了 ${v}。我们记的是 ${100 - v}。`
+  },
+  {
+    text: '过去两周里，你是否感到，有什么东西在等你回头。',
+    onShow() {
+      Face.blur(0.6);
+      flashText('你现在请坐好，不要回头。', 1100);
+    },
+    options: [{ t: '没有' }, { t: '偶尔' }, { t: '经常' }, { t: '它就在等' }],
+    sys: '很好。继续这样坐着。'
+  },
+  {
+    text: '你是否注意到，房间里出现了一些不该出现的东西——比如门缝下面，很细的一条影子。',
+    options: [{ t: '没有' }, { t: '有影子' }, { t: '有，而且在移动' }, { t: '我没有门' }],
+    sys: '记录：门缝高度 4 毫米，影子厚度 6 毫米。'
+  },
+  {
+    text: '你现在能听见自己的心跳吗？',
+    options: [{ t: '能' }, { t: '不能' }, { t: '能，但节奏不对' }, { t: '那不是我的心跳' }],
+    sys: '那不是你的。别跟着它数。'
+  },
+  {
+    text: '屏幕上这张脸，你以前见过吗？',
+    options: [{ t: '没有' }, { t: '有点像我自己' }, { t: '在梦里' }, { t: '它一直在看着我' }],
+    sys: '它不记得你。这很正常。'
+  },
+  {
+    text: '你是否对任何人说过谎——关于你现在正在做的事情？',
+    options: [{ t: '没有' }, { t: '说过一半' }, { t: '说过' }, { t: '我正在说谎' }],
+    sys: '数据库比对完成：不匹配。'
+  },
+  {
+    text: '接下来的问题，会用另一种方式提问。请继续看着屏幕。',
+    options: [
+      { t: '好' },
+      { t: '我不想继续' },
+      {
+        t: '我要关掉这个页面',
+        act: async () => {
+          Face.blur(1);
+          await flashText('页面不会关。');
+          await say('你已经试过了。第七次。', 2600);
+        }
+      },
+      { t: '没有别的选项吗' }
+    ],
+    sys: '没有。'
+  },
+  {
+    text: '现在，请如实回答最后一个问题：你身后有什么？',
+    options: [{ t: '什么都没有' }, { t: '一扇门' }, { t: '一个很暗的角落' }, { t: '我不知道，我不敢看' }],
+    sys: '错误。是「你背后」。'
+  },
+  {
+    text: '我们数三个数。你可以不回头。',
+    options: [
+      { t: '我马上走开', sys: '来不及了。' },
+      { t: '我叫人了', sys: '这间屋子里没有别人。' },
+      { t: '我数三下回头', sys: '数吧。我们也在数。' },
+      { t: '回头', final: true }
+    ],
+    onShow() { startFinalCountdown(); }
+  }
+];
+
+/* =========================================================
+   界面流程
+   ========================================================= */
+const els = {
+  card: $('#card'), qnum: $('#qnum'), tag: $('#tag'), bar: $('#barfill'),
+  qtext: $('#qtext'), qsub: $('#qsub'), options: $('#options'), hint: $('#hint'),
+  clock: $('#clock'), ender: $('#ender'), report: $('#report')
+};
+
+function stageFor(i) {
+  if (i <= 3) return 0;
+  if (i <= 7) return 1;
+  if (i <= 11) return 2;
+  if (i <= 15) return 3;
+  return 4;
+}
+
+const TAGS = ['PHQ-9 扩展量表', '已加密 · 科研用途', '已加密', '', '不要关灯'];
+const LEVELS = [0.04, 0.14, 0.30, 0.55, 0.72];
+
+let countdownTimer = null, countdownLeft = 180;
+
+function setStage(n) {
+  if (state.stage === n) return;
+  state.stage = n;
+  document.body.dataset.stage = String(n);
+  Sound.level(LEVELS[n] ?? 0.7);
+  BGM.setStage(n);
+  if (n === 2) {
+    toast('系统通知', '检测到 1 个未关闭的会话：你正在使用的这一间。');
+  }
+  if (n === 3) {
+    Sound.startHeart(1250);
+    Face.stageFace(0.05);
+    document.title = '心理健康自评 · 专业版（1）';
+    countdownLeft = 180;
+    clearInterval(countdownTimer);
+    countdownTimer = setInterval(() => {
+      countdownLeft = Math.max(0, countdownLeft - 1);
+      els.tag.textContent = countdownLeft > 0 ? '剩余 ' + mmss(countdownLeft) : '已经太晚了';
+      if (countdownLeft === 0) {
+        els.tag.style.color = '#c0392b';
+        Face.blur(1);
+      }
+    }, 1000);
+  }
+  if (n === 4) {
+    Sound.startHeart(980);
+    Face.stageFace(0.20);
+    document.title = '别回头';
+    setFavicon('alarm');
+  }
+}
+
+function setFavicon(kind) {
+  const svg = kind === 'alarm'
+    ? "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23000'/%3E%3Ccircle cx='16' cy='16' r='9' fill='%23c0392b'/%3E%3Ccircle cx='16' cy='16' r='4' fill='%23000'/%3E%3C/svg%3E"
+    : "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='12' fill='none' stroke='%232f8f83' stroke-width='3'/%3E%3Ccircle cx='16' cy='16' r='4' fill='%232f8f83'/%3E%3C/svg%3E";
+  const l = $('#favicon');
+  if (l) l.href = svg;
+}
+
+function setProgress() {
+  const pct = Math.round((state.i / (BANK.length - 1)) * 100);
+  els.bar.style.width = clamp(pct, 0, 100) + '%';
+  return pct;
+}
+
+function clearQuestion() {
+  els.options.innerHTML = '';
+  els.hint.textContent = '';
+  els.hint.classList.remove('big');
+  els.qsub.textContent = '';
+  els.qsub.classList.remove('show');
+  els.qtext.style.opacity = '1';
+}
+
+function renderOptions(q) {
+  const wrap = els.options;
+  wrap.innerHTML = '';
+
+  if (q.type === 'field' || q.type === 'text') {
+    const field = document.createElement('div');
+    field.className = 'field';
+    const input = document.createElement('input');
+    input.id = 'nameInput';
+    input.type = 'text';
+    input.maxLength = 12;
+    input.placeholder = '在这里输入';
+    input.autocomplete = 'off';
+    input.spellcheck = false;
+    const go = document.createElement('button');
+    go.className = 'go';
+    go.type = 'button';
+    go.textContent = '继续';
+    go.onclick = () => submitText(q);
+    input.addEventListener('keydown', e => { if (e.key === 'Enter') submitText(q); });
+    field.appendChild(input);
+    field.appendChild(go);
+    wrap.appendChild(field);
+    setTimeout(() => input.focus({ preventScroll: true }), 380);
+    return;
+  }
+
+  if (q.type === 'slider') {
+    const box = document.createElement('div');
+    box.className = 'slider';
+    const input = document.createElement('input');
+    input.type = 'range'; input.min = '0'; input.max = '100'; input.value = '62';
+    const val = document.createElement('div');
+    val.className = 'val';
+    val.textContent = '62 / 100';
+    input.oninput = () => { val.textContent = input.value + ' / 100'; };
+    box.appendChild(input); box.appendChild(val);
+    wrap.appendChild(box);
+    const b = document.createElement('button');
+    b.className = 'opt';
+    b.innerHTML = '<span class="k">A</span><span class="t">提交这个数字</span>';
+    b.onclick = () => { state.sliderValue = input.value; onPick(q.options[0], b, q); };
+    b.style.animation = 'none';
+    wrap.appendChild(b);
+    return;
+  }
+
+  q.options.forEach((opt, idx) => {
+    const b = document.createElement('button');
+    b.className = 'opt';
+    b.type = 'button';
+    const k = document.createElement('span'); k.className = 'k'; k.textContent = 'ABCDE'[idx] || '·';
+    const t = document.createElement('span'); t.className = 't'; t.textContent = opt.t;
+    b.appendChild(k); b.appendChild(t);
+    b.style.animationDelay = (idx * 55) + 'ms';
+    b.addEventListener('click', () => onPick(opt, b, q));
+    wrap.appendChild(b);
+  });
+}
+
+async function submitText(q) {
+  if (state.locked) return;
+  const input = $('#nameInput');
+  if (!input) return;
+  const v = input.value.trim();
+  if (!v) {
+    els.hint.textContent = '请先输入一个名字。';
+    input.focus();
+    return;
+  }
+  const btn = $('.field .go');
+  const opt = q.options[0];
+  opt.value = v;
+  await onPick(opt, btn, q);
+}
+
+async function show(i, instant) {
+  state.i = i;
+  state.locked = true;
+  const q = BANK[i];
+  const stage = stageFor(i);
+  setStage(stage);
+  clearQuestion();
+  els.card.classList.remove('intro');
+
+  setProgress();
+  els.qnum.textContent = '第 ' + (i + 1) + ' 题 / ' + BANK.length + (stage >= 1 ? ' · ' + setProgress() + '%' : '');
+  if (stage < 3) els.tag.textContent = TAGS[stage];
+  els.qtext.style.opacity = '1';
+
+  renderPlaceholder();
+  await typeText(els.qtext, q.text, instant ? 1 : (stage >= 3 ? 26 : 34));
+  typingCtl = null;
+
+  if (q.sub) { els.qsub.textContent = q.sub; requestAnimationFrame(() => els.qsub.classList.add('show')); }
+  if (q.hint) els.hint.textContent = q.hint;
+  renderOptions(q);
+  if (q.type !== 'text') {
+    els.hint.textContent = q.hint || '';
+  }
+  state.qStart = performance.now();
+  state.locked = false;
+  if (q.onShow) q.onShow();
+}
+
+function renderPlaceholder() {
+  els.qtext.textContent = '';
+}
+
+async function onPick(opt, btn, q) {
+  if (state.locked || state.done) return;
+  state.locked = true;
+  Sound.ensure();
+  Sound.tick(1200, 0.035);
+
+  const ms = Math.round(performance.now() - state.qStart);
+  state.lastMs = ms;
+  const value = opt.value !== undefined && opt.value !== ''
+    ? opt.value
+    : (q.type === 'slider' ? (state.sliderValue || '62') : opt.t);
+
+  if (q.type === 'text') {
+    state.name = String(value).trim().slice(0, 12) || '匿名';
+    try { localStorage.setItem('mj_name', state.name); } catch (e) { }
+  }
+  state.answers.push({ i: state.i, v: value, ms });
+
+  $$('.opt').forEach(b => { b.classList.add('dead'); b.disabled = true; });
+  if (btn) btn.classList.add('picked');
+  const input = $('#nameInput');
+  if (input) input.disabled = true;
+
+  const sys = typeof opt.sys === 'function' ? opt.sys(value)
+    : (opt.sys !== undefined ? opt.sys : (typeof q.sys === 'function' ? q.sys(value) : q.sys));
+
+  if (opt.final) { await startClimax(); return; }
+
+  if (opt.act) await opt.act(opt);
+  if (sys) await say(sys);
+  await wait(380);
+
+  if (state.i === BANK.length - 1) { await startClimax(); return; }
+  if (state.i + 1 >= BANK.length) return;
+  if (state.stage === 3 && state.i === 13) Face.blur(0.5);
+  state.locked = false;
+  show(state.i + 1);
+}
+
+/* --- 最终倒计时与爆发 --- */
+let finalTimer = null;
+function startFinalCountdown() {
+  let n = 3;
+  els.hint.classList.add('big');
+  els.hint.textContent = String(n);
+  Sound.tick(600, 0.12);
+  clearInterval(finalTimer);
+  finalTimer = setInterval(() => {
+    n--;
+    if (n <= 0) {
+      clearInterval(finalTimer);
+      els.hint.textContent = '';
+      els.hint.classList.remove('big');
+      const btns = $$('.opt');
+      btns.forEach((b, k) => {
+        if (k < 3) { b.classList.add('dead'); b.disabled = true; }
+        else { b.classList.add('picked'); b.disabled = false; }
+      });
+      const last = btns[btns.length - 1];
+      if (last) {
+        last.style.animation = 'pulse 1.2s infinite';
+        last.textContent = '';
+        const k = document.createElement('span'); k.className = 'k'; k.textContent = 'D';
+        const t = document.createElement('span'); t.className = 't'; t.textContent = '回　头';
+        last.appendChild(k); last.appendChild(t);
+      }
+      state.locked = false;
+      return;
+    }
+    els.hint.textContent = String(n);
+    Sound.tick(600, 0.12);
+  }, 1000);
+}
+
+async function startClimax() {
+  state.done = true;
+  state.locked = true;
+  clearInterval(finalTimer);
+  Sound.sting();
+  const calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!calm) document.body.classList.add('stingA');
+  Face.blur(1.6);
+  await wait(90);
+  document.body.classList.remove('stingA');
+  if (!calm) document.body.classList.add('stingB');
+  await wait(110);
+  document.body.classList.remove('stingB');
+  els.qtext.textContent = '别　看';
+  els.qtext.style.textShadow = '0 0 40px rgba(192,57,43,.9)';
+  await wait(700);
+  document.body.classList.add('blackout');
+  els.card.style.opacity = '0';
+  Face.stageFace(0);
+  await wait(1700);
+  await endSequence();
+}
+
+const END_LINES = [
+  '测试结束。',
+  '感谢你完成全部 24 道题目。',
+  '你的回答已经被记录。',
+  '按任意键，查看你的报告。'
+];
+let endResolve = null;
+async function endSequence() {
+  els.ender.classList.add('show');
+  for (const line of END_LINES) {
+    const d = document.createElement('div');
+    d.className = 'eline';
+    d.textContent = line;
+    els.ender.appendChild(d);
+    await wait(30);
+    d.classList.add('in');
+    await wait(line.startsWith('按任意键') ? 300 : 1500);
+  }
+  const hint = document.createElement('div');
+  hint.className = 'eline dim';
+  hint.textContent = '〔 按任意键 〕';
+  els.ender.appendChild(hint);
+  await wait(40); hint.classList.add('in');
+  await new Promise(res => {
+    endResolve = res;
+    const go = () => {
+      window.removeEventListener('keydown', go);
+      window.removeEventListener('pointerdown', go);
+      endResolve = null;
+      res();
+    };
+    window.addEventListener('keydown', go);
+    window.addEventListener('pointerdown', go);
+  });
+  els.ender.classList.remove('show');
+  els.ender.innerHTML = '';
+  showReport();
+}
+
+/* --- 报告 --- */
+function showReport() {
+  const name = state.name || '匿名';
+  const secs = Math.max(60, Math.round((Date.now() - state.t0) / 1000));
+  const sid = 'MJ-' + LEASE.date.replace(/-/g, '') + '-' + String(Math.floor(rnd(1000, 9999)));
+  const stay = (rnd(4.2, 9.8)).toFixed(1);
+  const offscreen = Math.round(rnd(58, 92));
+
+  els.report.innerHTML = `
+  <div class="rwrap">
+    <div class="rhead">
+      <div class="rlogo">明镜心理健康中心 · 自动评估系统 v4.7</div>
+      <h2>自 评 报 告</h2>
+      <div class="rsub">会话 ${sid} · ${LEASE.date} ${LEASE.time} · 未上传</div>
+    </div>
+
+    <div class="rgrid">
+      <div><span>受测者</span><b>${esc(name)}</b></div>
+      <div><span>完成题数</span><b>${state.answers.length} / ${BANK.length}</b></div>
+      <div><span>作答用时</span><b>${mmss(secs)}</b></div>
+      <div><span>总体心理状态</span><b class="ok">良好 · 97/100</b></div>
+    </div>
+
+    <h3>维度分数</h3>
+    <ul class="scores">
+      <li><span>焦虑指数</span><i style="--w:78%"></i><b>78</b></li>
+      <li><span>睡眠质量</span><i style="--w:12%"></i><b>无法测量</b></li>
+      <li><span>被注视感</span><i style="--w:100%"></i><b>∞</b></li>
+      <li><span>回头意愿</span><i style="--w:0%"></i><b>0</b></li>
+      <li><span>共情能力</span><i style="--w:2%"></i><b>未检出</b></li>
+      <li><span>说谎倾向</span><i style="--w:100%"></i><b>100%</b></li>
+    </ul>
+
+    <h3>检测到的 4 处不一致</h3>
+    <ol class="incons">
+      <li>你在第 3 题选择了「<b>完全没有</b>」，但光标在选项上停留了 ${stay} 秒。</li>
+      <li>你的屏幕是 ${LEASE.screen}，但你有 <b>${offscreen}%</b> 的时间没有看着它。</li>
+      <li>你的时区是 <b>${esc(LEASE.tz)}</b>。这个时区里，现在只有你在看这个页面。</li>
+      <li>你没有回头。<b>一次都没有。</b></li>
+    </ol>
+
+    <h3>建议</h3>
+    <ul class="advice">
+      <li>今晚不要照镜子。如果必须经过，请把镜子转过去。</li>
+      <li>如果听见有人叫你的名字，不要回答。第二次叫的时候，再回答。</li>
+      <li>不要关灯。灯光是最低限度的礼貌。</li>
+      <li>不要再看这个页面。系统备注：这条建议已经太晚了。</li>
+    </ul>
+
+    <p class="sig">—— 本报告由系统自动生成，未经人工复核。有效期为 3 分钟。</p>
+
+    <div class="ractions">
+      <button class="rbtn" data-act="again">再做一次</button>
+      <button class="rbtn" data-act="close">关闭页面</button>
+      <button class="rbtn danger" data-act="left">往左看</button>
+    </div>
+    <div class="rnote" id="rnote"></div>
+  </div>`;
+
+  els.report.classList.add('show');
+  document.title = '自评报告';
+  BGM.setStage(2);
+  Sound.level(0.55);
+
+  $$('.rbtn', els.report).forEach(b => {
+    b.onclick = async () => {
+      const act = b.dataset.act;
+      if (act === 'again') {
+        try { localStorage.setItem('mj_attempts', String(state.attempts + 1)); } catch (e) { }
+        location.reload();
+      } else if (act === 'close') {
+        try { window.close(); } catch (e) { }
+        b.disabled = true;
+        b.textContent = '关不掉。';
+        const n = $('#rnote');
+        n.textContent = '你已经试过了。系统记录：第七次。';
+        Face.blur(0.6);
+      } else if (act === 'left') {
+        enterScene();
+      }
+    };
+  });
+}
+
+/* --- 最后的场景 --- */
+function sceneSay(text, hold = 1300, cls = '') {
+  return new Promise(res => {
+    const d = document.createElement('div');
+    d.className = 'sline ' + cls;
+    const box = $('#sceneLines');
+    box.querySelectorAll('.sline:not(.keep)').forEach(el => el.classList.add('old'));
+    box.appendChild(d);
+    let extra = box.querySelectorAll('.sline').length - 6;
+    while (extra-- > 0) {
+      const first = box.querySelector('.sline');
+      if (!first) break;
+      first.remove();
+    }
+    awaitNextFrame(() => d.classList.add('in'));
+    let i = 0;
+    const step = () => {
+      d.textContent = text.slice(0, ++i);
+      if (i < text.length) setTimeout(step, 78);
+      else setTimeout(res, hold);
+    };
+    setTimeout(step, 260);
+  });
+}
+function awaitNextFrame(fn) { requestAnimationFrame(() => requestAnimationFrame(fn)); }
+
+async function enterScene() {
+  els.report.classList.remove('show');
+  document.body.classList.add('scene');
+  document.title = '……';
+  $('#scene').classList.add('show');
+  Face.scene();
+  Sound.level(0.85);
+  BGM.setStage(4);
+  Sound.startHeart(1000);
+
+  await wait(1800);
+  await sceneSay('你选了「往左看」。', 1400);
+  await sceneSay('很好。', 1200);
+  await sceneSay(state.name + '。', 1500);
+  await sceneSay('可是你左边，什么都没有。', 1600);
+  await sceneSay('一直都没有。', 1500);
+  await sceneSay('有的只是我。', 2200);
+  Sound.whisper(-0.5);
+  await wait(600);
+
+  const q = document.createElement('div');
+  q.className = 'sline q in';
+  q.textContent = '我现在可以靠近了吗？';
+  $('#sceneLines').appendChild(q);
+  const row = document.createElement('div');
+  row.className = 'sopts';
+  const yes = document.createElement('button'); yes.textContent = '可以';
+  const no = document.createElement('button'); no.textContent = '不可以';
+  row.appendChild(no); row.appendChild(yes);
+  $('#sceneLines').appendChild(row);
+  yes.onclick = () => ending(true);
+  no.onclick = () => ending(false);
+}
+
+/* =========================================================
+   夺舍：挣扎（无效）→ 被接管 → 它的问卷
+   ========================================================= */
+let struggling = false, will = 100, struggleT0 = 0, struggleRAF = 0, pushCount = 0, possessed = false;
+
+function hudRender() {
+  const bar = document.querySelector('#hud .hudbar i');
+  const pct = $('#hudPct');
+  if (!bar) return;
+  bar.style.width = Math.max(0, Math.min(100, will)) + '%';
+  if (pct) pct.textContent = Math.max(0, Math.round(will)) + '%';
+  bar.style.background = will > 60 ? '#7f9e8a' : (will > 28 ? '#b3832b' : '#b3352b');
+}
+
+function hudLine(text) {
+  const el = $('#hudSub');
+  if (!el) return;
+  el.textContent = text;
+  el.classList.add('on');
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove('on'), 2400);
+}
+
+function bodyShake(ms) {
+  document.body.classList.remove('shake');
+  void document.body.offsetWidth;
+  document.body.classList.add('shake');
+  setTimeout(() => document.body.classList.remove('shake'), ms || 360);
+}
+
+function ripple(x, y) {
+  const d = document.createElement('div');
+  d.className = 'ripple';
+  d.style.left = x + 'px';
+  d.style.top = y + 'px';
+  document.body.appendChild(d);
+  setTimeout(() => d.remove(), 700);
+}
+
+async function struggle() {
+  if (struggling || possessed) return;
+  struggling = true;
+  state.locked = true;
+  state.done = true;
+  will = 100;
+  hudRender();
+
+  document.body.classList.add('possess', 'hijack');
+  $('#hud').classList.add('show');
+  $('#struggle').classList.add('show');
+  const btn = $('#pushBtn');
+  btn.textContent = '挣　扎';
+  btn.style.transform = '';
+  btn.classList.remove('dead');
+  btn.style.display = '';
+  BGM.possess();
+  Face.approach();
+
+  struggleT0 = performance.now();
+  let last = struggleT0;
+  const loop = (now) => {
+    if (!struggling) return;
+    const dt = Math.min(0.08, (now - last) / 1000);
+    last = now;
+    const t = (now - struggleT0) / 1000;
+    const cap = Math.max(0, 100 - t * 6.1);
+    will = Math.min(will, cap);
+    will -= dt * 1.8;
+    hudRender();
+    const pull = Math.min(0.66, t * 0.05);
+    document.documentElement.style.setProperty('--pull', pull.toFixed(3));
+    if (will <= 0) { will = 0; hudRender(); finishStruggle(); return; }
+    struggleRAF = requestAnimationFrame(loop);
+  };
+  struggleRAF = requestAnimationFrame(loop);
+
+  const beats = [
+    [260, '它进来了。'],
+    [2400, '手，先借我用一下。'],
+    [5100, () => state.name + '，别挣扎。'],
+    [7600, '你不是第一个。'],
+    [10200, '也不会是最后一个。'],
+    [12600, '已经结束了。你只是还没承认。']
+  ];
+  beats.forEach(([ms, line]) => setTimeout(() => {
+    if (!struggling) return;
+    hudLine(typeof line === 'function' ? line() : line);
+  }, ms));
+
+  [4400, 8000, 11200].forEach((ms) => setTimeout(() => {
+    if (!struggling) return;
+    will = Math.max(0, will - 19);
+    hudRender();
+    bodyShake(340);
+    Sound.tick(80, 0.22);
+    Face.blur(1);
+    hudLine('别。');
+  }, ms));
+}
+
+function onPush(ev) {
+  if (!struggling) return;
+  pushCount++;
+  will = Math.min(100, will + 3.4);
+  hudRender();
+  Sound.tick(1350 + Math.random() * 500, 0.05);
+  ripple(ev.clientX || innerWidth / 2, ev.clientY || innerHeight / 2);
+  const btn = $('#pushBtn');
+  if (pushCount === 6) btn.textContent = '让 我 出 去';
+  if (pushCount === 12) btn.textContent = '不……';
+  if (pushCount >= 17) { btn.textContent = '没有反应。'; btn.classList.add('dead'); }
+  if (pushCount >= 6) {
+    const dx = (Math.random() - 0.5) * 200;
+    const dy = (Math.random() - 0.5) * 130;
+    btn.style.transform = 'translate(' + dx.toFixed(0) + 'px,' + dy.toFixed(0) + 'px)';
+  }
+  if (pushCount === 3) hudLine('对，就是这样。');
+  if (pushCount === 9) hudLine('你在跟谁较劲？');
+  if (pushCount === 14) hudLine('这里不归你管了。');
+}
+
+async function finishStruggle() {
+  if (!struggling) return;
+  struggling = false;
+  possessed = true;
+  cancelAnimationFrame(struggleRAF);
+  document.body.classList.remove('hijack');
+  document.documentElement.style.setProperty('--pull', '0');
+  $('#struggle').classList.remove('show');
+  BGM.cut();
+  Sound.sting();
+  bodyShake(600);
+  Face.approach();
+  hudLine('别怕。');
+  await wait(560);
+
+  $('#hud').classList.remove('show');
+  $('#lid').classList.add('close');
+  await wait(1000);
+
+  // 睁眼之后，已经是它的界面
+  document.body.classList.remove('scene', 'possess');
+  document.body.classList.add('aftermath');
+  $('#scene').classList.remove('show');
+  Face.fadeOut();
+  await wait(700);
+  buildAftermath();
+  $('#lid').classList.remove('close');
+  await wait(1500);
+  BGM.lullaby();
+  $('#after').classList.add('show');
+  hudLine('');
+}
+
+function buildAftermath() {
+  $('#after').innerHTML = `
+    <div class="card">
+      <div class="qmeta"><span>明镜心理 · 已接管</span><span class="tag">不需要你同意</span></div>
+      <h1 class="big">心理健康自评</h1>
+      <p class="lede">你好，${esc(state.name)}。你的身体很合适。里面很安静，我喜欢。</p>
+      <ul class="meta"><li>1 道题目</li><li>立即完成</li><li>不需要你回答</li></ul>
+      <button class="start" id="afBtn">继　续</button>
+      <p class="fine">（我还在。听得见吗。）</p>
+    </div>`;
+  $('#afBtn').onclick = () => askWho();
+}
+
+async function askWho() {
+  const box = $('#after');
+  box.innerHTML = `
+    <div class="card">
+      <div class="qmeta"><span>第 1 题 / 1</span><span class="tag">由我作答</span></div>
+      <h1 class="qtext" style="font-family:var(--serif)">「你」现在是谁？</h1>
+      <div class="options">
+        <button class="opt" id="afA"><span class="k">A</span><span class="t">我</span></button>
+        <button class="opt" id="afB"><span class="k">B</span><span class="t">不是我</span></button>
+      </div>
+      <div class="hint" id="afHint"></div>
+    </div>`;
+  await wait(1500);
+  const a = $('#afA'), b = $('#afB');
+  if (!a) return;
+  a.classList.add('picked');
+  Sound.tick(900, 0.06);
+  await wait(650);
+  b.classList.add('dead');
+  b.disabled = true;
+  $('#afHint').textContent = '很好。';
+  await wait(2400);
+  $('#afHint').textContent = '（那我呢。）';
+  $('#afHint').style.fontSize = '12px';
+  $('#afHint').style.opacity = '.55';
+  await wait(2400);
+  await finalBlack();
+}
+
+async function finalBlack() {
+  document.body.classList.add('blackout');
+  $('#after').classList.remove('show');
+  await wait(1400);
+  els.ender.classList.add('show');
+  els.ender.innerHTML = '';
+  await enderLine('你的手很适合我。', 1900);
+  await enderLine('明天早上，你会照常醒来。', 2100);
+  await enderLine('只是醒来的那个人，不是你。', 2600);
+  await wait(1200);
+  BGM.fade(5);
+  await enderLine('（放我出去。）', 0, true);
+  await wait(2000);
+  await enderLine('……', 0, true);
+  setTimeout(() => {
+    const t = document.createElement('div');
+    t.className = 'eline dim';
+    t.textContent = '刷新页面可以重新开始。';
+    t.style.fontSize = '10px';
+    els.ender.appendChild(t);
+    awaitNextFrame(() => t.classList.add('in'));
+  }, 12000);
+}
+
+function enderLine(text, hold, dim) {
+  return new Promise(resolve => {
+    const d = document.createElement('div');
+    d.className = 'eline' + (dim ? ' dim' : '');
+    d.textContent = text;
+    els.ender.appendChild(d);
+    awaitNextFrame(() => d.classList.add('in'));
+    setTimeout(resolve, hold || 0);
+  });
+}
+
+async function ending(allow) {
+  $$('.sopts button').forEach(b => { b.disabled = true; });
+  $$('.sopts').forEach(r => r.classList.add('gone'));
+  if (allow) {
+    await sceneSay('好。', 700);
+  } else {
+    await sceneSay('……那就当你答应了。', 1300);
+  }
+  await wait(500);
+  await struggle();
+}
+
+/* =========================================================
+   启动
+   ========================================================= */
+function boot() {
+  Face.boot();
+  setFavicon('normal');
+
+  try {
+    if (state.attempts > 0) {
+      const big = $('.big');
+      const lede = $('.lede');
+      if (big) big.textContent = state.name && state.name !== '匿名' ? '你回来了，' + state.name + '。' : '你回来了。';
+      if (lede) lede.textContent = '这是第 ' + (state.attempts + 1) + ' 次。上一次你没有做完。没关系，我们把答案留着。';
+    }
+  } catch (e) { }
+
+  $('#startBtn').addEventListener('click', async () => {
+    Sound.ensure();
+    Sound.level(LEVELS[0]);
+    BGM.start();
+    BGM.setStage(0);
+    try { localStorage.setItem('mj_attempts', String(state.attempts + 1)); } catch (e) { }
+    $('#card').classList.remove('intro');
+    say('会话已建立 · 本地加密 · 不收集个人数据', 900);
+    await wait(700);
+    show(0);
+  });
+
+  setInterval(() => {
+    els.clock.textContent = mmss((Date.now() - state.t0) / 1000);
+  }, 1000);
+
+  document.addEventListener('pointermove', e => {
+    const cur = $('#cur');
+    const pull = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--pull')) || 0;
+    const px = e.clientX + (innerWidth * 0.5 - e.clientX) * pull;
+    const py = e.clientY + (innerHeight * 0.45 - e.clientY) * pull;
+    cur.style.left = px + 'px';
+    cur.style.top = py + 'px';
+    if (state.stage >= 3 && !document.body.classList.contains('scene')) {
+      const k = (e.clientX / innerWidth - 0.5) * 4;
+      document.documentElement.style.setProperty('--cardx', k.toFixed(2) + 'px');
+    }
+  }, { passive: true });
+
+  document.addEventListener('pointerdown', e => {
+    if (typeof struggling !== 'undefined' && struggling) onPush(e);
+  }, true);
+
+  document.addEventListener('keydown', e => {
+    if (state.locked || state.done) return;
+    if (document.body.classList.contains('scene')) return;
+    const m = /^[1-4a-dA-D]$/.test(e.key) ? e.key : null;
+    if (!m) return;
+    const idx = 'abcd'.includes(m.toLowerCase()) ? 'abcd'.indexOf(m.toLowerCase()) : Number(m) - 1;
+    const b = $('.opt')[idx];
+    if (b && !b.disabled) { e.preventDefault(); b.click(); }
+  });
+
+  // 调试 / 预览入口
+  window.__R = {
+    async jump(n) {
+      $('#card').classList.remove('intro');
+      await show(clamp(n, 0, BANK.length - 1), true);
+    },
+    async pick(k) {
+      for (let i = 0; i < 40 && state.locked; i++) await wait(100);
+      const b = $$('.opt')[k];
+      if (b) b.click();
+    },
+    skip() { skipTyping(); },
+    async toReport() {
+      document.body.classList.add('blackout');
+      els.card.style.opacity = '0';
+      await wait(400);
+      showReport();
+    },
+    scene() { els.report.classList.remove('show'); enterScene(); },
+    climax() { startClimax(); },
+    async possess() { await struggle(); },
+    bgm: () => BGM,
+    state
+  };
+}
+
+boot();
+</script>
+</body>
+</html>
